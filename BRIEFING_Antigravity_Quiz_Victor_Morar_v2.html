@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing Tehnic v2 — Quiz Victor Morar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --accent: #e8ff3c;
+    --accent2: #3cffe8;
+    --gray-1: #1a1a1a;
+    --gray-2: #2a2a2a;
+    --gray-3: #3a3a3a;
+    --gray-4: #666;
+    --gray-5: #999;
+    --text: #e8e8e0;
+    --text-dim: #888;
+    --border: #2a2a2a;
+    --R: #ff6b6b;
+    --Re: #ffa94d;
+    --M: #ffd43b;
+    --D: #69db7c;
+    --C: #4dabf7;
+    --S: #cc5de8;
+    --phase1: #e8ff3c;
+    --phase2: #3cffe8;
+    --phase3: #ff6b6b;
+    --phase4: #cc5de8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .doc-header {
+    background: var(--gray-1);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 64px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--phase3), var(--phase4));
+  }
+  .doc-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .doc-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .doc-subtitle {
+    font-size: 16px;
+    color: var(--gray-5);
+    font-weight: 300;
+  }
+  .doc-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .doc-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .doc-meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .doc-meta-value { font-size: 14px; color: var(--text); font-weight: 500; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 64px; }
+
+  .section { padding: 56px 0 48px; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  p { margin-bottom: 12px; color: var(--text-dim); font-size: 14px; line-height: 1.65; }
+  p strong { color: var(--text); }
+  h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 12px; margin-top: 28px; }
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--gray-2);
+    color: var(--accent2);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  .callout.alert { border-left-color: var(--R); }
+  .callout.info { border-left-color: var(--C); }
+  .callout-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .callout.alert .callout-title { color: var(--R); }
+  .callout.info .callout-title { color: var(--C); }
+  .callout p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 0; }
+  .callout p + p { margin-top: 8px; }
+  .callout strong { color: var(--text); }
+
+  /* PHASE BLOCKS */
+  .phase-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .phase-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .phase-1 .phase-header { background: rgba(232,255,60,0.06); }
+  .phase-1 .phase-num { background: rgba(232,255,60,0.15); color: var(--phase1); }
+  .phase-1 .phase-label { color: var(--phase1); }
+  .phase-2 .phase-header { background: rgba(60,255,232,0.06); }
+  .phase-2 .phase-num { background: rgba(60,255,232,0.15); color: var(--phase2); }
+  .phase-2 .phase-label { color: var(--phase2); }
+  .phase-3 .phase-header { background: rgba(255,107,107,0.06); }
+  .phase-3 .phase-num { background: rgba(255,107,107,0.15); color: var(--phase3); }
+  .phase-3 .phase-label { color: var(--phase3); }
+  .phase-4 .phase-header { background: rgba(204,93,232,0.06); }
+  .phase-4 .phase-num { background: rgba(204,93,232,0.15); color: var(--phase4); }
+  .phase-4 .phase-label { color: var(--phase4); }
+
+  .phase-header-text {}
+  .phase-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 3px;
+  }
+  .phase-title { font-size: 16px; font-weight: 700; color: var(--white); }
+  .phase-desc { font-size: 13px; color: var(--gray-5); margin-top: 2px; }
+  .phase-body { padding: 24px; background: var(--gray-1); }
+  .phase-body p { font-size: 13px; }
+
+  /* FLOW MASTER */
+  .master-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .master-flow::before {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    bottom: 36px;
+    width: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .flow-step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+  }
+  .flow-step + .flow-step { margin-top: 8px; }
+  .flow-step-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+    background: var(--black);
+  }
+  .flow-step-content {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    flex: 1;
+    margin-bottom: 8px;
+  }
+  .flow-step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .flow-step-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .flow-step-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 8px;
+    vertical-align: middle;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ECRANE */
+  .ecrane-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .ecran-row {
+    display: grid;
+    grid-template-columns: 44px 140px 1fr 140px;
+    align-items: start;
+    gap: 14px;
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 12px 16px;
+  }
+  .ecran-row.phase-sep {
+    background: transparent;
+    border: none;
+    padding: 8px 0 4px;
+    grid-template-columns: 1fr;
+  }
+  .phase-sep-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .phase-sep-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .ecran-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-4);
+    padding-top: 3px;
+  }
+  .ecran-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    font-weight: 600;
+    align-self: start;
+  }
+  .type-hook { background: rgba(232,255,60,0.1); color: var(--accent); }
+  .type-data { background: rgba(77,171,247,0.1); color: var(--C); }
+  .type-q-id { background: rgba(232,255,60,0.1); color: var(--accent); }
+  .type-q-profile { background: rgba(60,255,232,0.1); color: var(--accent2); }
+  .type-q-pain { background: rgba(255,107,107,0.1); color: var(--R); }
+  .type-q-goal { background: rgba(204,93,232,0.1); color: var(--S); }
+  .type-sandler { background: rgba(255,107,107,0.08); color: var(--R); }
+  .type-transition { background: rgba(105,219,124,0.1); color: var(--D); }
+  .type-result { background: rgba(60,255,232,0.1); color: var(--accent2); }
+  .ecran-content { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .ecran-content strong { color: var(--text); font-weight: 600; }
+  .ecran-content em { color: var(--gray-5); font-style: italic; font-size: 12px; }
+  .ecran-note { font-size: 12px; color: var(--gray-5); line-height: 1.5; }
+
+  /* SCORING BADGES */
+  .score-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 3px;
+    display: inline-block;
+    margin-bottom: 2px;
+  }
+  .s-R { background: rgba(255,107,107,0.2); color: var(--R); }
+  .s-Re { background: rgba(255,169,77,0.2); color: var(--Re); }
+  .s-M { background: rgba(255,212,59,0.2); color: var(--M); }
+  .s-D { background: rgba(105,219,124,0.2); color: var(--D); }
+  .s-C { background: rgba(77,171,247,0.2); color: var(--C); }
+  .s-S { background: rgba(204,93,232,0.2); color: var(--S); }
+
+  /* TIPOLOGII */
+  .tipologie-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .tipologie-card {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tipologie-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .tip-R::before { background: var(--R); }
+  .tip-Re::before { background: var(--Re); }
+  .tip-M::before { background: var(--M); }
+  .tip-D::before { background: var(--D); }
+  .tip-C::before { background: var(--C); }
+  .tip-S::before { background: var(--S); }
+  .tip-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  .tip-R .tip-badge { background: rgba(255,107,107,0.15); color: var(--R); }
+  .tip-Re .tip-badge { background: rgba(255,169,77,0.15); color: var(--Re); }
+  .tip-M .tip-badge { background: rgba(255,212,59,0.15); color: var(--M); }
+  .tip-D .tip-badge { background: rgba(105,219,124,0.15); color: var(--D); }
+  .tip-C .tip-badge { background: rgba(77,171,247,0.15); color: var(--C); }
+  .tip-S .tip-badge { background: rgba(204,93,232,0.15); color: var(--S); }
+  .tipologie-name { font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .tipologie-pain { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+  .tipologie-etape { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4); }
+
+  /* TABLES */
+  .data-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13px; }
+  .data-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gray-4);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--gray-1);
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-2);
+    color: var(--text-dim);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .data-table tr:hover td { background: var(--gray-1); }
+  .data-table td strong { color: var(--text); }
+
+  /* PAIN FUNNEL */
+  .pain-funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .pain-level {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .pain-level-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pain-level-1 .pain-level-header { background: rgba(255,107,107,0.06); }
+  .pain-level-2 .pain-level-header { background: rgba(77,171,247,0.06); }
+  .pain-level-3 .pain-level-header { background: rgba(255,212,59,0.06); }
+  .pain-level-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .pain-level-1 .pain-level-num { background: rgba(255,107,107,0.2); color: var(--R); }
+  .pain-level-2 .pain-level-num { background: rgba(77,171,247,0.2); color: var(--C); }
+  .pain-level-3 .pain-level-num { background: rgba(255,212,59,0.2); color: var(--M); }
+  .pain-level-title { font-size: 13px; font-weight: 600; color: var(--white); }
+  .pain-level-sub { font-size: 12px; color: var(--gray-5); margin-top: 1px; }
+  .pain-level-body { padding: 16px 18px; background: var(--gray-1); }
+  .pain-q { font-size: 13px; color: var(--text-dim); padding: 6px 0; border-bottom: 1px solid var(--gray-2); display: flex; gap: 10px; }
+  .pain-q:last-child { border-bottom: none; }
+  .pain-q::before { content: '→'; color: var(--gray-4); flex-shrink: 0; }
+  .pain-q-answer { font-size: 12px; color: var(--gray-5); margin-top: 3px; font-style: italic; }
+
+  /* FILES */
+  .files-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  .file-group { background: var(--gray-1); border: 1px solid var(--border); border-radius: 6px; padding: 18px; }
+  .file-group-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .file-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--gray-2); }
+  .file-item:last-child { border-bottom: none; }
+  .file-name { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent2); flex-shrink: 0; padding-top: 1px; min-width: 100px; }
+  .file-action { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+  .tag-m { font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; margin-right: 4px; background: rgba(232,255,60,0.15); color: var(--accent); font-weight: 600; }
+  .tag-new { font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; margin-right: 4px; background: rgba(60,255,232,0.15); color: var(--accent2); font-weight: 600; }
+  .tag-del { font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; margin-right: 4px; background: rgba(255,107,107,0.15); color: var(--R); font-weight: 600; }
+  .tag-keep { font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; margin-right: 4px; background: rgba(105,219,124,0.1); color: var(--D); font-weight: 600; }
+
+  /* CODE */
+  .code-block { background: var(--gray-1); border: 1px solid var(--border); border-radius: 6px; padding: 22px; margin-bottom: 20px; overflow-x: auto; }
+  .code-block pre { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text); line-height: 1.7; white-space: pre; }
+  .code-comment { color: var(--gray-4); }
+  .code-key { color: var(--accent2); }
+  .code-string { color: var(--accent); }
+  .code-type { color: var(--Re); }
+
+  /* VICTOR QUOTE */
+  .victor-quote { background: var(--gray-1); border-left: 2px solid var(--gray-3); padding: 14px 18px; border-radius: 4px; margin: 10px 0 16px; }
+  .victor-quote p { font-size: 13px; color: var(--gray-5); font-style: italic; line-height: 1.6; margin: 0; }
+  .victor-quote cite { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4); display: block; margin-top: 6px; font-style: normal; }
+
+  /* RULES */
+  .rules-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .rule-item { display: grid; grid-template-columns: 28px 1fr; gap: 14px; background: var(--gray-1); border: 1px solid var(--border); border-radius: 5px; padding: 14px 16px; align-items: start; }
+  .rule-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent); padding-top: 1px; }
+  .rule-text { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .rule-text strong { color: var(--text); }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  .col-card { background: var(--gray-1); border: 1px solid var(--border); border-radius: 6px; padding: 20px; }
+  .col-card-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .col-card.stays .col-card-title { color: var(--accent2); }
+  .col-card.changes .col-card-title { color: var(--accent); }
+  .col-card ul { list-style: none; }
+  .col-card ul li { font-size: 13px; color: var(--text-dim); padding: 5px 0; border-bottom: 1px solid var(--gray-2); display: flex; gap: 8px; }
+  .col-card ul li:last-child { border-bottom: none; }
+  .col-card ul li::before { content: '—'; color: var(--gray-4); flex-shrink: 0; }
+  .col-card.stays ul li::before { color: var(--accent2); }
+  .col-card.changes ul li::before { color: var(--accent); }
+
+  /* TOC */
+  .toc { background: var(--gray-1); border: 1px solid var(--border); border-radius: 6px; padding: 24px; margin-bottom: 40px; }
+  .toc-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 16px; }
+  .toc-items { display: flex; flex-direction: column; gap: 2px; }
+  .toc-item { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-dim); text-decoration: none; padding: 7px 0; border-bottom: 1px solid var(--gray-2); }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item:hover { color: var(--white); }
+  .toc-item-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4); width: 24px; flex-shrink: 0; }
+
+  /* RESULT ANATOMY */
+  .result-anatomy { background: var(--gray-1); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+  .result-section { display: grid; grid-template-columns: 160px 1fr; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .result-section:last-child { border-bottom: none; }
+  .result-zone { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gray-4); padding-top: 2px; }
+  .result-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .result-desc strong { color: var(--text); }
+
+  /* FOOTER */
+  .doc-footer { background: var(--gray-1); border-top: 1px solid var(--border); padding: 28px 64px; margin-top: 0; }
+  .doc-footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .doc-footer-text { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="doc-tag">Briefing Tehnic v2 • Confidențial</div>
+  <div class="doc-title">Quiz Victor Morar<br>— Ghid de Implementare</div>
+  <div class="doc-subtitle">Structură în 4 faze: Identificare tipologie → Profilare individuală → Pain Funnel → Scop</div>
+  <div class="doc-meta">
+    <div class="doc-meta-item"><span class="doc-meta-label">Proiect</span><span class="doc-meta-value">Arhitectura Afacerii — Quiz Funnel</span></div>
+    <div class="doc-meta-item"><span class="doc-meta-label">Versiune</span><span class="doc-meta-value">v2 — structură corectă</span></div>
+    <div class="doc-meta-item"><span class="doc-meta-label">Tipologii</span><span class="doc-meta-value">6 · Scoring faza 1</span></div>
+    <div class="doc-meta-item"><span class="doc-meta-label">Faze</span><span class="doc-meta-value">4 faze distincte</span></div>
+    <div class="doc-meta-item"><span class="doc-meta-label">Baza de cod</span><span class="doc-meta-value">quiz-files.zip (React + TS)</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="section">
+    <div class="toc">
+      <div class="toc-title">Cuprins</div>
+      <div class="toc-items">
+        <a href="#principiu" class="toc-item"><span class="toc-item-num">01</span>Principiul fundamental — cele 4 faze</a>
+        <a href="#faza1" class="toc-item"><span class="toc-item-num">02</span>Faza 1 — Identificarea tipologiei (scoring)</a>
+        <a href="#faza2" class="toc-item"><span class="toc-item-num">03</span>Faza 2 — Profilarea individuală</a>
+        <a href="#faza3" class="toc-item"><span class="toc-item-num">04</span>Faza 3 — Pain Funnel (3 niveluri)</a>
+        <a href="#faza4" class="toc-item"><span class="toc-item-num">05</span>Faza 4 — Scopul real</a>
+        <a href="#flux" class="toc-item"><span class="toc-item-num">06</span>Fluxul complet — toate ecranele</a>
+        <a href="#rezultat" class="toc-item"><span class="toc-item-num">07</span>Ecranul de rezultat — ce vede omul + ce primești tu</a>
+        <a href="#tipologii" class="toc-item"><span class="toc-item-num">08</span>Cele 6 tipologii — definiții + scoring</a>
+        <a href="#tehnic" class="toc-item"><span class="toc-item-num">09</span>Implementare tehnică — ce se modifică</a>
+        <a href="#reguli" class="toc-item"><span class="toc-item-num">10</span>Reguli de implementare</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 PRINCIPIU -->
+  <div class="section" id="principiu">
+    <div class="section-label">01</div>
+    <div class="section-title">Principiul Fundamental — Cele 4 Faze</div>
+
+    <div class="callout">
+      <div class="callout-title">De ce 4 faze, nu scoring simplu</div>
+      <p>Un quiz cu scoring uniform pe toate întrebările identifică tipologia, dar nu spune nimic despre <strong>cine e omul</strong>, <strong>ce a încercat</strong>, <strong>cum se simte</strong> și <strong>unde vrea să ajungă</strong>. Consultantul care primește datele pe WhatsApp trebuie să știe toate acestea înainte de primul mesaj. Cele 4 faze construiesc un profil complet, nu doar o etichetă.</p>
+    </div>
+
+    <div class="phase-block phase-1">
+      <div class="phase-header">
+        <div class="phase-num">1</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Faza 1</div>
+          <div class="phase-title">Identificarea tipologiei</div>
+          <div class="phase-desc">2–3 întrebări comportamentale → scoring → tipologia dominantă</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Primele întrebări sunt concepute să clasifice omul în una din cele 6 tipologii prin răspunsuri despre <strong>comportamentul lui concret</strong>, nu despre cum se descrie el. Omul nu știe că e clasificat. La finalul fazei 1, sistemul știe tipologia primară și secundară. <strong>Toate întrebările din faza 2, 3, 4 sunt adaptate pe tipologia identificată.</strong></p>
+      </div>
+    </div>
+
+    <div class="phase-block phase-2">
+      <div class="phase-header">
+        <div class="phase-num">2</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Faza 2</div>
+          <div class="phase-title">Profilarea individuală</div>
+          <div class="phase-desc">Cine e el ca om — date despre business, educație, comportament</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Odată identificată tipologia, quizul intră în particulartățile individuale ale omului. <strong>Nu despre problemă</strong> — despre el: câți angajați are, cât generează, ce educație antreprenorială are, cât timp petrece pe rețele, cu ce citat se regăsește. Aceste date completează profilul și permit personalizarea VSL-ului și a conversației din DM.</p>
+      </div>
+    </div>
+
+    <div class="phase-block phase-3">
+      <div class="phase-header">
+        <div class="phase-num">3</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Faza 3</div>
+          <div class="phase-title">Pain Funnel — 3 niveluri</div>
+          <div class="phase-desc">Suprafața → Motive business → Impact emoțional</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Modelul Pain Funnel (Sandler) aplicat structurat pe 3 niveluri. <strong>Level 1</strong> — ce se întâmplă concret la suprafață. <strong>Level 2</strong> — ce a încercat, de ce nu a funcționat, impactul pe cifre. <strong>Level 3</strong> — impactul personal și emoțional, cât de pregătit e să schimbe, ce se întâmplă dacă nu face nimic. Aceste ecrane <strong>nu acumulează puncte de tipologie</strong> — adâncesc durerea și creează urgență.</p>
+      </div>
+    </div>
+
+    <div class="phase-block phase-4">
+      <div class="phase-header">
+        <div class="phase-num">4</div>
+        <div class="phase-header-text">
+          <div class="phase-label">Faza 4</div>
+          <div class="phase-title">Scopul real</div>
+          <div class="phase-desc">Unde vrea să ajungă — obiectivul lui principal</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <p>Ultima întrebare înainte de rezultat: ce vrea el de fapt. <strong>Timp liber, creșterea vânzărilor, angajarea oamenilor potriviți, creștere exponențială</strong> — sau combinație. Aceasta ancorează VSL-ul nu pe problemă, ci pe destinație. Omul care vrea timp liber primește un mesaj diferit față de omul care vrea să scaleze.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 FAZA 1 -->
+  <div class="section" id="faza1">
+    <div class="section-label">02</div>
+    <div class="section-title">Faza 1 — Identificarea Tipologiei</div>
+
+    <p>Faza 1 conține <strong>2–3 întrebări</strong> cu răspunsuri care acumulează puncte pentru fiecare din cele 6 tipologii. Clasificarea se face la finalul fazei 1 — înainte ca omul să intre în faza 2. Întrebările sunt formulate în termeni de situații reale, nu de auto-descriere.</p>
+
+    <div class="callout alert">
+      <div class="callout-title">Diferența față de versiunea anterioară</div>
+      <p>În v1 al briefing-ului, scoring-ul era distribuit pe toate întrebările din quiz. <strong>Greșit.</strong> Clasificarea trebuie să se întâmple rapid, în primele 2–3 întrebări, pentru ca restul quizului să poată fi adaptat pe tipologia identificată. Faza 2, 3 și 4 pot conține întrebări specifice tipologiei — imposibil dacă nu știm tipologia dinainte.</p>
+    </div>
+
+    <h4>Întrebarea 1 — Frustrarea principală (MULTI-SELECT)</h4>
+    <p>Prima întrebare e cu multi-select — omul poate bifa mai multe. Fiecare răspuns acumulează puncte pentru tipologia corespunzătoare.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text răspuns</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Nu găsesc oameni buni. Angajez în panică și tot eu rămân cu treaba.</td><td><span class="score-badge s-R">R+3</span></td></tr>
+        <tr><td>B</td><td>ÎNVĂȚ oameni, și apoi pleacă. Unii își deschid firme concurente.</td><td><span class="score-badge s-Re">Re+3</span></td></tr>
+        <tr><td>C</td><td>Am oameni, dar nu performează. Vin la program, nu la rezultat.</td><td><span class="score-badge s-M">M+3</span></td></tr>
+        <tr><td>D</td><td>Am oameni, dar tot EU fac munca importantă. Altfel iese prost.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>E</td><td>Echipa e ok, dar fiecare face cum vrea. Nu există standard.</td><td><span class="score-badge s-S">S+2</span> <span class="score-badge s-C">C+2</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="victor-quote">
+      <p>„Știi ce am descoperit după 18 ani și 250+ angajați? Problema nu sunt niciodată oamenii. Problema e SISTEMUL în care îi pui. Un om bun într-un sistem prost va părea incompetent. Mereu."</p>
+      <cite>— Victor Morar, quote după întrebarea 1</cite>
+    </div>
+
+    <h4>Întrebarea 2 — Ziua tipică (SINGLE-SELECT) — discriminatorie</h4>
+
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text răspuns</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Interviuri, anunțuri, probabil concediez pe cineva luna asta.</td><td><span class="score-badge s-R">R+3</span></td></tr>
+        <tr><td>B</td><td>Formez pe cineva nou, pentru că cel vechi a plecat.</td><td><span class="score-badge s-Re">Re+3</span></td></tr>
+        <tr><td>C</td><td>Verific ce au făcut angajații, corectez, refac.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-M">M+2</span></td></tr>
+        <tr><td>D</td><td>Sting focuri de dimineață până seara. Nu ajung la ce e strategic.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>E</td><td>Am ședințe, dar managerii vin cu probleme, nu cu soluții.</td><td><span class="score-badge s-S">S+3</span> <span class="score-badge s-C">C+1</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="victor-quote">
+      <p>„Eu petreceam 60% din timp pe mărunțișuri, 35% management, 5% strategie. Eram cel mai scump angajat din propria firmă — făceam muncă de 500€ cu un cost de 5.000€."</p>
+      <cite>— Victor Morar, quote după întrebarea 2</cite>
+    </div>
+
+    <h4>Întrebarea 3 — Testul vacanței (SINGLE-SELECT) — tie-breaker</h4>
+    <p>A treia întrebare e cea mai discriminatorie. Dacă după primele 2 există o egalitate, aceasta o rezolvă. <strong>Scor x2 față de întrebările anterioare.</strong></p>
+
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text răspuns</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Haos. Nimeni nu știe ce să facă fără mine.</td><td><span class="score-badge s-D">D+3</span> ×2</td></tr>
+        <tr><td>B</td><td>Calitate scăzută. Clienți nemulțumiți că nu am fost eu.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-Re">Re+1</span> ×2</td></tr>
+        <tr><td>C</td><td>1–2 oameni cheie au plecat și au luat clienți cu ei.</td><td><span class="score-badge s-Re">Re+3</span> ×2</td></tr>
+        <tr><td>D</td><td>Vânzările au scăzut. Nimeni nu a urmărit cifrele.</td><td><span class="score-badge s-C">C+3</span> ×2</td></tr>
+        <tr><td>E</td><td>Fiecare departament a făcut ce a vrut. Zero coordonare.</td><td><span class="score-badge s-S">S+3</span> ×2</td></tr>
+        <tr><td>F</td><td>Nici nu pot pleca 3 zile, darămite 2 săptămâni.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-R">R+1</span> ×2</td></tr>
+      </tbody>
+    </table>
+
+    <div class="victor-quote">
+      <p>„Am condus 5 companii și am călătorit în 5 țări anul trecut. Nu am angajați geniali. Am SISTEM."</p>
+      <cite>— Victor Morar, quote după întrebarea 3</cite>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">Ce se întâmplă după faza 1</div>
+      <p>Funcția <code>performClassification()</code> rulează după întrebarea 3 și setează <code>profileAxis</code> (tipologia primară) și <code>secondaryProfile</code> (tipologia secundară) în state. <strong>De acum înainte, toate întrebările sunt adaptate pe tipologia identificată.</strong> Faza 2 începe imediat, fără ecran de tranziție vizibil pentru utilizator.</p>
+    </div>
+  </div>
+
+  <!-- 03 FAZA 2 -->
+  <div class="section" id="faza2">
+    <div class="section-label">03</div>
+    <div class="section-title">Faza 2 — Profilarea Individuală</div>
+
+    <p>Faza 2 construiește profilul complet al omului ca antreprenor. Aceste date nu influențează tipologia — tipologia e deja stabilită. Ele completează imaginea pentru consultantul care va prelua conversația și pentru personalizarea VSL-ului.</p>
+
+    <div class="callout">
+      <div class="callout-title">Ce vrem să știm despre el</div>
+      <p>Dimensiunea businessului · Performanța financiară actuală vs dorită · Educația antreprenorială · Comportamentul pe rețele sociale · Personalitatea și valorile (prin citat)</p>
+    </div>
+
+    <h4>P1 — Dimensiunea echipei (SINGLE-SELECT)</h4>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Notă</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>1–4 angajați</td><td>Aspirant — business mic</td></tr>
+        <tr><td>B</td><td>5–15 angajați</td><td>Profil standard</td></tr>
+        <tr><td>C</td><td>16–30 angajați</td><td>Profil avansat</td></tr>
+        <tr><td>D</td><td>Peste 30 angajați</td><td>Scalator</td></tr>
+      </tbody>
+    </table>
+
+    <h4>P2 — Cifra de afaceri lunară actuală (SINGLE-SELECT)</h4>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Sub 5.000€/lună</td></tr>
+        <tr><td>B</td><td>5.000–20.000€/lună</td></tr>
+        <tr><td>C</td><td>20.000–50.000€/lună</td></tr>
+        <tr><td>D</td><td>Peste 50.000€/lună</td></tr>
+        <tr><td>E</td><td>Nu știu exact — nu am o evidență clară</td></tr>
+      </tbody>
+    </table>
+
+    <h4>P3 — Educația antreprenorială (MULTI-SELECT)</h4>
+    <p>Ce fel de om e din perspectiva formării lui. Influențează tonul VSL-ului și al conversației din DM.</p>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Am studii universitare în domeniu</td></tr>
+        <tr><td>B</td><td>Am experiență practică — am învățat făcând</td></tr>
+        <tr><td>C</td><td>Am fost la cursuri sau traininguri de business</td></tr>
+        <tr><td>D</td><td>Am lucrat cu un mentor sau consultant</td></tr>
+        <tr><td>E</td><td>Consum conținut online — podcasturi, cărți, YouTube</td></tr>
+        <tr><td>F</td><td>Nu am investit în educație antreprenorială până acum</td></tr>
+      </tbody>
+    </table>
+
+    <h4>P4 — Timp pe rețelele sociale (SINGLE-SELECT)</h4>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Sub 30 minute pe zi</td></tr>
+        <tr><td>B</td><td>30–60 minute pe zi</td></tr>
+        <tr><td>C</td><td>1–2 ore pe zi</td></tr>
+        <tr><td>D</td><td>Peste 2 ore pe zi</td></tr>
+      </tbody>
+    </table>
+
+    <h4>P5 — Citat cu care se regăsește (SINGLE-SELECT)</h4>
+    <p>Aceasta e o întrebare de personalitate. Răspunsul spune ceva despre cum gândește omul, ce îl motivează, ce limbaj îi vorbește. Influențează tonul VSL-ului și primul mesaj din DM.</p>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Citat</th><th>Ce indică</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>„Dacă vrei să mergi repede, mergi singur. Dacă vrei să mergi departe, mergi împreună."</td><td>Orientat spre echipă, colaborare</td></tr>
+        <tr><td>B</td><td>„Nu poți gestiona ce nu poți măsura."</td><td>Analitic, orientat spre date și control</td></tr>
+        <tr><td>C</td><td>„Sistemele câștigă campionate, nu talentele individuale."</td><td>Înțelege valoarea proceselor</td></tr>
+        <tr><td>D</td><td>„Lucrează inteligent, nu mult."</td><td>Obosit, caută eficiență</td></tr>
+        <tr><td>E</td><td>„Cel mai periculos moment e atunci când succesul îți pare garantat."</td><td>Scalator prudent, conștient de riscuri</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 04 FAZA 3 -->
+  <div class="section" id="faza3">
+    <div class="section-label">04</div>
+    <div class="section-title">Faza 3 — Pain Funnel (3 Niveluri)</div>
+
+    <p>Pain Funnel-ul coboară omul de la suprafața problemei la impactul real — emoțional și financiar. Cele 3 niveluri sunt separate și progresive. Fiecare nivel e mai profund decât precedentul. <strong>Niciun ecran din faza 3 nu acumulează puncte de tipologie.</strong></p>
+
+    <div class="pain-funnel">
+
+      <div class="pain-level pain-level-1">
+        <div class="pain-level-header">
+          <div class="pain-level-num">LEVEL 1</div>
+          <div>
+            <div class="pain-level-title">Suprafața problemei — Ce se întâmplă concret</div>
+            <div class="pain-level-sub">Întrebări: „Spune-mi mai mult... Poți da un exemplu? De ce crezi că se întâmplă asta?"</div>
+          </div>
+        </div>
+        <div class="pain-level-body">
+          <div class="pain-q">
+            <div>
+              <strong>Cât te costă această problemă pe lună?</strong> (SINGLE-SELECT)<br>
+              <span class="pain-q-answer">Sub 1.000€ — dar mă consumă nervos / 1.000–5.000€ / 5.000–10.000€ / Peste 10.000€ sau nu știu, ceea ce e și mai rău</span>
+            </div>
+          </div>
+          <div class="pain-q">
+            <div>
+              <strong>Cum arată concret problema în businessul tău săptămâna asta?</strong> (TEXT LIBER sau MULTI-SELECT adaptat pe tipologie)<br>
+              <span class="pain-q-answer">Exemplu pentru D (Delegare): Am refăcut eu muncă pe care a făcut-o altcineva / Nu am reușit să ies din birou înainte de ora 20 / Am anulat ceva personal din cauza unui incendiu la firmă / Am verificat personal un lucru pe care îl delegasem</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-level pain-level-2">
+        <div class="pain-level-header">
+          <div class="pain-level-num">LEVEL 2</div>
+          <div>
+            <div class="pain-level-title">Motive de business — Ce a încercat, de ce nu a funcționat</div>
+            <div class="pain-level-sub">Întrebări: „Din tot ce puteai alege să rezolvi, de ce asta? Ce ai încercat? Care e impactul pe cifre?"</div>
+          </div>
+        </div>
+        <div class="pain-level-body">
+          <div class="pain-q">
+            <div>
+              <strong>Ce ai încercat deja ca să rezolvi problema?</strong> (MULTI-SELECT — adaptat pe tipologie)<br>
+              <span class="pain-q-answer">Exemplu pentru R (Recrutare): Am schimbat platforma de anunțuri / Am crescut salariul oferit / Am angajat un recrutor / Am cerut recomandări de la echipă / Nu am schimbat nimic — nu știu ce altceva să încerc</span>
+            </div>
+          </div>
+          <div class="pain-q">
+            <div>
+              <strong>Cât de mult a funcționat ce ai încercat?</strong> (SINGLE-SELECT)<br>
+              <span class="pain-q-answer">Deloc — suntem exact unde eram / Puțin — a ajutat temporar / Parțial — îmbunătățit dar problema persistă / Nu am implementat nimic concret</span>
+            </div>
+          </div>
+          <div class="pain-q">
+            <div>
+              <strong>De ce a devenit prioritatea ta nr. 1 acum?</strong> (SINGLE-SELECT)<br>
+              <span class="pain-q-answer">M-am săturat — e de prea mult timp / A apărut un moment critic / Concurența ne depășește / Am realizat că altfel nu pot crește</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-level pain-level-3">
+        <div class="pain-level-header">
+          <div class="pain-level-num">LEVEL 3</div>
+          <div>
+            <div class="pain-level-title">Impactul emoțional — Cum se simte, cât de urgent e</div>
+            <div class="pain-level-sub">Întrebări: „Cine altcineva e afectat? E organizația pregătită să schimbe? Ce se întâmplă dacă nu faci nimic?"</div>
+          </div>
+        </div>
+        <div class="pain-level-body">
+          <div class="pain-q">
+            <div>
+              <strong>Ce impact are problema asupra ta PERSONAL?</strong> (MULTI-SELECT)<br>
+              <span class="pain-q-answer">Vin târziu acasă, nu am timp de familie / Nu fac sport, am pus kilograme / Sunt irascibil, mă cert din cauza stresului / Simt că îmi ratez viața stând în telefon / Copiii mei cresc și eu nu sunt prezent</span>
+            </div>
+          </div>
+          <div class="pain-q">
+            <div>
+              <strong>Cum te simți față de situație în acest moment?</strong> (SINGLE-SELECT)<br>
+              <span class="pain-q-answer">O să se rezolve — sunt optimist / E grav dar gestionabil / Sunt epuizat și nu mai am energie / Îmi vine să las totul jos</span>
+            </div>
+          </div>
+          <div class="pain-q">
+            <div>
+              <strong>Dacă nu schimbi NIMIC în 6 luni, ce se va întâmpla?</strong> (MULTI-SELECT)<br>
+              <span class="pain-q-answer">Voi continua să pierd bani și energie la fel / Voi pierde oameni cheie — va fi și mai greu / O să ajung la burnout. Sunt aproape / Concurența mă va depăși / O să vreau să vând firma. Dar cine cumpără un business care depinde de mine?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="victor-quote">
+      <p>„Am fost exact acolo. În 2023 am vrut să vând tot. Dar am înțeles: nu trebuie să renunț la afacere — trebuie să renunț la modul în care o conduceam."</p>
+      <cite>— Victor Morar, quote în blocul Pain Funnel</cite>
+    </div>
+  </div>
+
+  <!-- 05 FAZA 4 -->
+  <div class="section" id="faza4">
+    <div class="section-label">05</div>
+    <div class="section-title">Faza 4 — Scopul Real</div>
+
+    <p>Ultima fază înainte de ecranul de rezultat. Ancorează conversația nu pe problemă, ci pe <strong>destinație</strong>. Omul care vrea timp liber primește un mesaj diferit față de omul care vrea să scaleze exponențial.</p>
+
+    <h4>G1 — Obiectivul principal (SINGLE-SELECT)</h4>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Ce implică pentru VSL</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Să am timp liber — sport, familie, vacanțe fără telefon</td><td>VSL axat pe libertate și calitate a vieții</td></tr>
+        <tr><td>B</td><td>Să cresc vânzările fără să cresc și haosul</td><td>VSL axat pe scalare controlată</td></tr>
+        <tr><td>C</td><td>Să angajez și să rețin oamenii potriviți</td><td>VSL axat pe echipă și sisteme HR</td></tr>
+        <tr><td>D</td><td>Să știu ce se întâmplă în firmă fără să fiu prezent fizic</td><td>VSL axat pe control și raportare</td></tr>
+        <tr><td>E</td><td>Să cresc exponențial — noi piețe, noi business-uri</td><td>VSL axat pe structură pentru expansiune</td></tr>
+      </tbody>
+    </table>
+
+    <h4>G2 — Cifra de afaceri țintă (SINGLE-SELECT)</h4>
+    <table class="data-table">
+      <thead><tr><th>Opțiune</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Să stabilizez ce am — nu vreau să cresc acum, vreau să funcționeze</td></tr>
+        <tr><td>B</td><td>Să dublez cifra actuală în 12 luni</td></tr>
+        <tr><td>C</td><td>Să triplez sau mai mult — am piața, îmi lipsește structura</td></tr>
+        <tr><td>D</td><td>Nu știu exact — mai întâi vreau să rezolv problema curentă</td></tr>
+      </tbody>
+    </table>
+
+    <p>După G2 urmează ecranul de tranziție: <strong>„[PRENUME], vești bune. Problema ta are soluție."</strong> → buton spre rezultat.</p>
+  </div>
+
+  <!-- 06 FLUX COMPLET -->
+  <div class="section" id="flux">
+    <div class="section-label">06</div>
+    <div class="section-title">Fluxul Complet — Toate Ecranele</div>
+
+    <div class="ecrane-list">
+
+      <div class="ecran-row phase-sep">
+        <div class="phase-sep-label" style="color: var(--phase1);">Intro + Date inițiale</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E1</div>
+        <div><span class="ecran-type type-hook">Hook</span></div>
+        <div class="ecran-content"><strong>„Afacerea ta are o problemă principală care te ține blocat. Majoritatea antreprenorilor nu știu care e."</strong><br><em>Subtext + buton „Vreau să aflu"</em></div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E2</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content"><strong>Prenume</strong> — câmp text. Micro-commitment. Folosit pentru personalizare din E3.</div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row phase-sep">
+        <div class="phase-sep-label" style="color: var(--phase1);">Faza 1 — Identificare tipologie (scoring)</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E3</div>
+        <div><span class="ecran-type type-q-id">Q1 · ID</span></div>
+        <div class="ecran-content"><strong>[PRENUME], care e cea mai mare frustrare a ta legată de echipă?</strong><br>☑ ALEGE MAI MULTE · Quote Victor după răspuns</div>
+        <div class="ecran-note"><span class="score-badge s-R">R</span><span class="score-badge s-Re">Re</span><span class="score-badge s-M">M</span><span class="score-badge s-D">D</span><span class="score-badge s-S">S</span><span class="score-badge s-C">C</span></div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E4</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content"><strong>Username Instagram</strong><br><em>„Ca să îți trimit rezultatul și pe Instagram." — colectat după prima întrebare.</em></div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E5</div>
+        <div><span class="ecran-type type-q-id">Q2 · ID</span></div>
+        <div class="ecran-content"><strong>Cum arată o zi de lucru tipică pentru tine?</strong><br>● ALEGE UNA · Quote Victor după răspuns</div>
+        <div class="ecran-note"><span class="score-badge s-R">R</span><span class="score-badge s-Re">Re</span><span class="score-badge s-D">D</span><span class="score-badge s-M">M</span><span class="score-badge s-S">S</span><span class="score-badge s-C">C</span></div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E6</div>
+        <div><span class="ecran-type type-q-id">Q3 · ID</span></div>
+        <div class="ecran-content"><strong>Dacă pleci 2 săptămâni în vacanță și îți închizi telefonul, ce găsești?</strong><br>● ALEGE UNA · Tie-breaker x2 · Quote Victor după răspuns</div>
+        <div class="ecran-note"><span class="score-badge s-R">R</span><span class="score-badge s-Re">Re</span><span class="score-badge s-D">D</span><span class="score-badge s-C">C</span><span class="score-badge s-S">S</span></div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">—</div>
+        <div><span class="ecran-type type-transition">Clasificare</span></div>
+        <div class="ecran-content"><strong>Clasificare internă — invizibilă pentru utilizator.</strong><br><em>performClassification() rulează. profileAxis și secondaryProfile setate în state. Faza 2 începe.</em></div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row phase-sep">
+        <div class="phase-sep-label" style="color: var(--phase2);">Faza 2 — Profilare individuală</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E7</div>
+        <div><span class="ecran-type type-q-profile">P1 · Profil</span></div>
+        <div class="ecran-content"><strong>Câți angajați ai acum?</strong><br>● ALEGE UNA — 1–4 / 5–15 / 16–30 / Peste 30</div>
+        <div class="ecran-note">Date profil</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E8</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content"><strong>Email</strong><br><em>„Rezultatul personalizat îl primești pe email." — colectat la mijlocul quizului.</em></div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E9</div>
+        <div><span class="ecran-type type-q-profile">P2 · Profil</span></div>
+        <div class="ecran-content"><strong>Cât generează businessul tău pe lună?</strong><br>● ALEGE UNA — Sub 5k€ / 5k–20k€ / 20k–50k€ / Peste 50k€ / Nu știu exact</div>
+        <div class="ecran-note">Date profil</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E10</div>
+        <div><span class="ecran-type type-q-profile">P3 · Profil</span></div>
+        <div class="ecran-content"><strong>Ce educație antreprenorială ai?</strong><br>☑ ALEGE MAI MULTE — Studii universitare / Experiență practică / Cursuri / Mentor / Conținut online / Nimic formal</div>
+        <div class="ecran-note">Date profil</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E11</div>
+        <div><span class="ecran-type type-q-profile">P4 · Profil</span></div>
+        <div class="ecran-content"><strong>Cât timp petreci pe rețelele sociale pe zi?</strong><br>● ALEGE UNA — Sub 30 min / 30–60 min / 1–2 ore / Peste 2 ore</div>
+        <div class="ecran-note">Date profil</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E12</div>
+        <div><span class="ecran-type type-q-profile">P5 · Profil</span></div>
+        <div class="ecran-content"><strong>Cu care din citatele de mai jos te regăsești cel mai bine?</strong><br>● ALEGE UNA — 5 citate cu semnificații diferite de personalitate</div>
+        <div class="ecran-note">Date profil</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E13</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content"><strong>Număr de telefon</strong><br><em>„Dacă diagnostica arată o problemă urgentă, te contactăm în 24h." — colectat după profilare completă.</em></div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row phase-sep">
+        <div class="phase-sep-label" style="color: var(--phase3);">Faza 3 — Pain Funnel (3 niveluri)</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E14</div>
+        <div><span class="ecran-type type-q-pain">L1 · Pain</span></div>
+        <div class="ecran-content"><strong>Cât te costă această problemă pe lună?</strong><br>● ALEGE UNA — Sub 1k€ / 1k–5k€ / 5k–10k€ / Peste 10k€ sau nu știu</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E15</div>
+        <div><span class="ecran-type type-q-pain">L1 · Pain</span></div>
+        <div class="ecran-content"><strong>Cum arată concret problema în businessul tău săptămâna asta?</strong><br>☑ ALEGE MAI MULTE — răspunsuri adaptate pe tipologia identificată</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E16</div>
+        <div><span class="ecran-type type-q-pain">L2 · Pain</span></div>
+        <div class="ecran-content"><strong>Ce ai încercat deja ca să rezolvi problema?</strong><br>☑ ALEGE MAI MULTE — răspunsuri adaptate pe tipologie · Quote Victor</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E17</div>
+        <div><span class="ecran-type type-q-pain">L2 · Pain</span></div>
+        <div class="ecran-content"><strong>Cât de mult a funcționat ce ai încercat?</strong><br>● ALEGE UNA — Deloc / Puțin / Parțial / Nu am implementat nimic</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E18</div>
+        <div><span class="ecran-type type-q-pain">L2 · Pain</span></div>
+        <div class="ecran-content"><strong>De ce a devenit prioritatea ta nr. 1 acum?</strong><br>● ALEGE UNA — M-am săturat / Moment critic / Concurența / Nu pot crește altfel</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E19</div>
+        <div><span class="ecran-type type-q-pain">L3 · Pain</span></div>
+        <div class="ecran-content"><strong>Ce impact are problema asupra ta PERSONAL?</strong><br>☑ ALEGE MAI MULTE — Familie / Sport / Relație / Prezență / Copii</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E20</div>
+        <div><span class="ecran-type type-q-pain">L3 · Pain</span></div>
+        <div class="ecran-content"><strong>Cum te simți față de situație în acest moment?</strong><br>● ALEGE UNA — <strong>O să se rezolve / E grav dar gestionabil / Sunt epuizat / Îmi vine să las totul jos</strong></div>
+        <div class="ecran-note">Fără scoring<br><em>Indicator emoțional cheie</em></div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E21</div>
+        <div><span class="ecran-type type-q-pain">L3 · Pain</span></div>
+        <div class="ecran-content"><strong>Dacă nu schimbi NIMIC în 6 luni, ce se va întâmpla?</strong><br>☑ ALEGE MAI MULTE — Pierd bani / Pierd oameni / Burnout / Concurență / Vând firma</div>
+        <div class="ecran-note">Fără scoring</div>
+      </div>
+
+      <div class="ecran-row phase-sep">
+        <div class="phase-sep-label" style="color: var(--phase4);">Faza 4 — Scopul real</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E22</div>
+        <div><span class="ecran-type type-q-goal">G1 · Scop</span></div>
+        <div class="ecran-content"><strong>Care e obiectivul tău principal pentru următoarele 12 luni?</strong><br>● ALEGE UNA — Timp liber / Creștere vânzări / Oameni potriviți / Control fără prezență / Creștere exponențială</div>
+        <div class="ecran-note">Temperatură</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E23</div>
+        <div><span class="ecran-type type-q-goal">G2 · Scop</span></div>
+        <div class="ecran-content"><strong>Cifra de afaceri țintă în 12 luni?</strong><br>● ALEGE UNA — Stabilizez ce am / Dublez / Triplez sau mai mult / Nu știu, mai întâi rezolv problema</div>
+        <div class="ecran-note">Temperatură</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E24</div>
+        <div><span class="ecran-type type-transition">Tranziție</span></div>
+        <div class="ecran-content"><strong>„[PRENUME], vești bune. Problema ta are soluție."</strong><br>Buton: [Arată-mi rezultatul]</div>
+        <div class="ecran-note">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E25</div>
+        <div><span class="ecran-type type-result">Rezultat</span></div>
+        <div class="ecran-content"><strong>Ecranul de rezultat personalizat</strong><br>Tipologie primară + secundară + descriere + VSL + CTA → WhatsApp consultant</div>
+        <div class="ecran-note">—</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 07 REZULTAT -->
+  <div class="section" id="rezultat">
+    <div class="section-label">07</div>
+    <div class="section-title">Ecranul de Rezultat — Ce Vede Omul + Ce Primești Tu</div>
+
+    <h4>Ce vede omul</h4>
+    <div class="result-anatomy">
+      <div class="result-section">
+        <div class="result-zone">Antet</div>
+        <div class="result-desc"><strong>[PRENUME], problema ta principală este:</strong> — Denumirea tipologiei primare cu badge culoare</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">Descriere primară</div>
+        <div class="result-desc">2–3 rânduri care descriu situația lui exact. Efectul: <em>„parcă vorbește despre mine."</em> Text specific tipologiei.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">Problemă secundară</div>
+        <div class="result-desc">Mențiune scurtă a tipologiei secundare — validează că nu e o singură problemă izolată.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">Soluția</div>
+        <div class="result-desc">Ce rezolvă cursul concret — etapele relevante, ce schimbă. Nu vinde cursul direct — prezintă calea.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">CTA</div>
+        <div class="result-desc"><strong>„Consultantul îți trimite acum materialul personalizat pe WhatsApp."</strong> — buton WhatsApp cu mesaj pre-completat.</div>
+      </div>
+    </div>
+
+    <h4>Ce primește consultantul pe WhatsApp</h4>
+    <div class="callout info">
+      <div class="callout-title">Date transmise automat consultantului</div>
+      <p>Mesajul pre-completat de pe butonul WhatsApp conține toate datele colectate în quiz, structurate pentru consultantul Victor:</p>
+      <p><strong>Nume:</strong> [prenume] · <strong>Email:</strong> [email] · <strong>Tel:</strong> [telefon] · <strong>Instagram:</strong> [username]<br>
+      <strong>Tipologie primară:</strong> [R/Re/M/D/C/S] · <strong>Tipologie secundară:</strong> [cod]<br>
+      <strong>Angajați:</strong> [număr] · <strong>Cifră actuală:</strong> [interval] · <strong>Țintă 12 luni:</strong> [interval]<br>
+      <strong>Educație antreprenorială:</strong> [opțiuni selectate]<br>
+      <strong>Ce a încercat:</strong> [opțiuni selectate] · <strong>Rezultat:</strong> [Deloc/Puțin/Parțial]<br>
+      <strong>Stare emoțională:</strong> [O să se rezolve / E grav / Epuizat / Vrea să lase]<br>
+      <strong>Obiectiv principal:</strong> [opțiunea selectată] · <strong>Citat ales:</strong> [citat]</p>
+    </div>
+
+    <p>Consultantul știe <strong>înainte de primul mesaj</strong>: cine e omul, ce problemă are, ce a încercat, cum se simte, cât de urgent e și unde vrea să ajungă. Conversația din DM poate fi personalizată complet din prima secundă.</p>
+  </div>
+
+  <!-- 08 TIPOLOGII -->
+  <div class="section" id="tipologii">
+    <div class="section-label">08</div>
+    <div class="section-title">Cele 6 Tipologii — Definiții + Scoring</div>
+
+    <div class="tipologie-grid">
+      <div class="tipologie-card tip-R">
+        <div class="tip-badge">R · Recrutare</div>
+        <div class="tipologie-name">Nu găsesc oameni buni</div>
+        <div class="tipologie-pain">Angajează în panică, ia primul care apare, nu are proces de selecție. Cercul vicios: angajează → nu merge → concediază → angajează.</div>
+        <div class="tipologie-etape">Curs → Etapa 2 + Etapa 3</div>
+      </div>
+      <div class="tipologie-card tip-Re">
+        <div class="tip-badge">Re · Retenție</div>
+        <div class="tipologie-name">Formez oameni care poi pleacă</div>
+        <div class="tipologie-pain">Investește luni în formare. Când omul devine productiv, pleacă. Know-how-ul e în capul oamenilor, nu în procese documentate.</div>
+        <div class="tipologie-etape">Curs → Etapa 3 + Etapa 4</div>
+      </div>
+      <div class="tipologie-card tip-M">
+        <div class="tip-badge">M · Motivație</div>
+        <div class="tipologie-name">Plătesc dar nu primesc rezultat</div>
+        <div class="tipologie-pain">Angajații vin la program, nu la performanță. Salariu fix fără KPI. Profitul per angajat scade cu fiecare om nou.</div>
+        <div class="tipologie-etape">Curs → Etapa 4</div>
+      </div>
+      <div class="tipologie-card tip-D">
+        <div class="tip-badge">D · Delegare</div>
+        <div class="tipologie-name">Fac eu totul, că altfel iese prost</div>
+        <div class="tipologie-pain">El ESTE businessul. 12+ ore/zi, telefon mereu pornit. A încercat să delege — tot el a refăcut. Cea mai frecventă tipologie.</div>
+        <div class="tipologie-etape">Curs → Etapa 1 + Etapa 5</div>
+      </div>
+      <div class="tipologie-card tip-C">
+        <div class="tip-badge">C · Control</div>
+        <div class="tipologie-name">Nu știu ce se întâmplă în firma mea</div>
+        <div class="tipologie-pain">Fără cifre, fără raportare, decizii pe instinct. Află că ceva nu merge doar când e deja dezastru. Pierde bani fără să știe unde.</div>
+        <div class="tipologie-etape">Curs → Etapa 4</div>
+      </div>
+      <div class="tipologie-card tip-S">
+        <div class="tip-badge">S · Structură</div>
+        <div class="tipologie-name">Cresc, dar totul se complică</div>
+        <div class="tipologie-pain">Cifra urcă, echipa crește, haosul crește odată cu ea. Fiecare manager face cum vrea. Nu există organigramă sau procese standard.</div>
+        <div class="tipologie-etape">Curs → Etapa 2 + 3 + 6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 TEHNIC -->
+  <div class="section" id="tehnic">
+    <div class="section-label">09</div>
+    <div class="section-title">Implementare Tehnică — Ce Se Modifică</div>
+
+    <div class="two-col">
+      <div class="col-card stays">
+        <div class="col-card-title">✓ Rămâne intact</div>
+        <ul>
+          <li>Toate componentele vizuale React</li>
+          <li>Sistemul de ecrane și navigare</li>
+          <li>Micro-validările după răspunsuri</li>
+          <li>Pauzele sociale (PAUSE_A, B, C)</li>
+          <li>Ecranul de rezultat — structura vizuală</li>
+          <li>Logica de temperatură HOT/WARM/COLD</li>
+          <li>Colectarea datelor — componente form</li>
+        </ul>
+      </div>
+      <div class="col-card changes">
+        <div class="col-card-title">↻ Se modifică</div>
+        <ul>
+          <li><code>types.ts</code> — ProfileAxis: 6 tipologii noi</li>
+          <li><code>classification.ts</code> — rulează după E6, nu la final</li>
+          <li><code>machine.ts</code> — faze distincte în state</li>
+          <li><code>questions/</code> — conținut complet nou, faza 2 adaptată pe tipologie</li>
+          <li><code>results/</code> — 6 template-uri noi</li>
+          <li><code>profile-reveals.ts</code> — 6 texte noi</li>
+          <li><code>intro.ts</code> — textul lui Victor</li>
+          <li>Imaginile din <code>assets/cases/</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>Modificare cheie în machine.ts — faza 2 adaptată</h4>
+    <div class="code-block">
+      <pre><span class="code-comment">// types.ts — starea quizului extinsă</span>
+<span class="code-key">interface</span> <span class="code-type">QuizState</span> {
+  phase: QuizPhase;
+  scores: <span class="code-type">Record</span>&lt;<span class="code-type">ProfileAxis</span>, <span class="code-type">number</span>&gt;;     <span class="code-comment">// acumulat în faza 1</span>
+  profileAxis: <span class="code-type">ProfileAxis</span> | <span class="code-type">null</span>;          <span class="code-comment">// setat după E6</span>
+  secondaryProfile: <span class="code-type">ProfileAxis</span> | <span class="code-type">null</span>;     <span class="code-comment">// al doilea scor</span>
+  
+  <span class="code-comment">// Date profil (faza 2)</span>
+  employeeCount: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  currentRevenue: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  entrepreneurialEducation: <span class="code-type">string</span>[];
+  socialMediaTime: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  identityQuote: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  
+  <span class="code-comment">// Pain funnel (faza 3)</span>
+  monthlyCost: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  triedSolutions: <span class="code-type">string</span>[];
+  solutionResult: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  emotionalState: <span class="code-type">string</span> | <span class="code-type">null</span>;  <span class="code-comment">// e grav / epuizat / etc.</span>
+  personalImpact: <span class="code-type">string</span>[];
+  futureConsequences: <span class="code-type">string</span>[];
+  
+  <span class="code-comment">// Scop (faza 4)</span>
+  mainGoal: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  revenueTarget: <span class="code-type">string</span> | <span class="code-type">null</span>;
+  temperature: <span class="code-type">Temperature</span> | <span class="code-type">null</span>;
+}</pre>
+    </div>
+
+    <h4>Clasificarea — rulează după E6, nu la finalul quizului</h4>
+    <div class="code-block">
+      <pre><span class="code-comment">// classification.ts — rulează după întrebarea 3 din faza 1</span>
+<span class="code-key">export function</span> <span class="code-type">performClassification</span>(state: QuizState): QuizState {
+  <span class="code-key">const</span> { scores } = state;
+
+  <span class="code-comment">// Sortează tipologiile după scor descrescător</span>
+  <span class="code-key">const</span> sorted = (Object.keys(scores) <span class="code-key">as</span> ProfileAxis[])
+    .sort((a, b) => scores[b] - scores[a]);
+
+  <span class="code-key">const</span> primary = sorted[0];
+  <span class="code-key">const</span> secondary = sorted[1];
+
+  <span class="code-key">return</span> {
+    ...state,
+    profileAxis: primary,
+    secondaryProfile: secondary,
+    resolvedProfile: primary,
+    phase: <span class="code-string">'P1'</span>, <span class="code-comment">// prima întrebare din faza 2</span>
+  };
+}
+
+<span class="code-comment">// Faza 2 — întrebările P2, P3, P4 despre ce a încercat</span>
+<span class="code-comment">// pot fi adaptate pe profileAxis dacă e nevoie.</span>
+<span class="code-comment">// De ex: opțiunile de la "Ce ai încercat" sunt diferite</span>
+<span class="code-comment">// pentru R (Recrutare) față de D (Delegare).</span></pre>
+    </div>
+
+    <div class="files-grid">
+      <div class="file-group">
+        <div class="file-group-title">src/lib/quiz/ — Logica core</div>
+        <div class="file-item">
+          <span class="file-name">types.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> ProfileAxis: 6 tipologii. Adaugă câmpurile noi în QuizState pentru faza 2, 3, 4.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">classification.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> Rulează după E6 (faza 1). Returnează primar + secundar. Setează phase la prima întrebare din faza 2.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">machine.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> Events noi pentru fiecare ecran. Clasificare declanșată după ANSWER_Q3 (E6). Faza 2 stochează date de profil separat de scores.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">temperature.ts</span>
+          <span class="file-action"><span class="tag-keep">KEEP</span> Calculat din G1 (obiectivul principal). HOT = timp liber/creștere exponențială. WARM = creștere vânzări/oameni. COLD = stabilizare.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/questions/</div>
+        <div class="file-item">
+          <span class="file-name">universal.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> Conține Q1, Q2, Q3 (faza 1). Toate universale — fără ramuri.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">profile.ts</span>
+          <span class="file-action"><span class="tag-new">CREATE</span> P1–P5 (faza 2). Unele întrebări din faza 2 (ce a încercat) pot fi variante per tipologie.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">pain.ts</span>
+          <span class="file-action"><span class="tag-new">CREATE</span> L1, L2, L3 (faza 3 — Pain Funnel). Răspunsurile din L1 și L2 adaptate pe tipologie.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">goals.ts</span>
+          <span class="file-action"><span class="tag-new">CREATE</span> G1, G2 (faza 4 — Scop). Universale pentru toate tipologiile.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">branch-*.ts</span>
+          <span class="file-action"><span class="tag-del">DELETE</span> Nu mai există ramuri bazate pe clasificare inițială.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/results/</div>
+        <div class="file-item">
+          <span class="file-name">r.ts, re.ts, m.ts</span>
+          <span class="file-action"><span class="tag-new">CREATE</span> Template-uri rezultat pentru R, Re, M. Înlocuiesc beg.ts, exp.ts, new.ts.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">d.ts, c.ts, s.ts</span>
+          <span class="file-action"><span class="tag-new">CREATE</span> Template-uri rezultat pentru D, C, S. Fișiere noi.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">index.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> Map actualizat la 6 tipologii.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/ — Conținut general</div>
+        <div class="file-item">
+          <span class="file-name">intro.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> Text intro Victor. Author: „Victor Morar".</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">profile-reveals.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> 6 intrări: R, Re, M, D, C, S. Emoji + titlu + descriere.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">gifts.ts</span>
+          <span class="file-action"><span class="tag-m">MODIFY</span> CTA-urile lui Victor. URL lista de așteptare. Cazurile reale.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">assets/cases/</span>
+          <span class="file-action"><span class="tag-del">REPLACE</span> Toate imaginile înlocuite cu cazuri reale ale lui Victor.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 REGULI -->
+  <div class="section" id="reguli">
+    <div class="section-label">10</div>
+    <div class="section-title">Reguli de Implementare</div>
+
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div class="rule-text"><strong>Clasificarea se face după faza 1 — nu la finalul quizului.</strong> După ecranul E6 (Q3 — testul vacanței), <code>performClassification()</code> rulează și setează tipologia primară și secundară. Restul quizului știe tipologia și poate adapta conținutul.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div class="rule-text"><strong>Q3 este tie-breaker cu weight x2.</strong> Dacă după Q1 și Q2 există egalitate între două tipologii, Q3 decide cu scoruri duble. Implementare: multiplică punctele din Q3 cu 2 în reducer înainte de clasificare.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div class="rule-text"><strong>Faza 2 stochează date de profil, nu scoruri.</strong> Câmpurile din faza 2 (employeeCount, currentRevenue, etc.) se salvează direct în QuizState — nu contribuie la clasificarea tipologiei. Sunt date pure de profil pentru consultantul care preia conversația.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">4</div>
+        <div class="rule-text"><strong>Faza 3 — Pain Funnel — nu acumulează puncte.</strong> Ecranele E14–E21 adâncesc durerea și creează urgență. Nu schimbă tipologia. Răspunsurile se salvează în state și se transmit consultantului prin mesajul WhatsApp.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">5</div>
+        <div class="rule-text"><strong>E20 (starea emoțională) este câmp prioritar pentru consultantul.</strong> Răspunsul la „Cum te simți față de situație?" — <em>O să se rezolve / E grav dar gestionabil / Sunt epuizat / Îmi vine să las totul jos</em> — spune consultantului ce ton să adopte în primul mesaj. Trebuie afișat vizibil în datele transmise.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">6</div>
+        <div class="rule-text"><strong>Datele se colectează progresiv.</strong> Prenume E2 → Instagram E4 → Email E8 → Telefon E13. Ordinea nu se schimbă. Omul nu simte că i se cer date — primește ceva util la fiecare pas.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">7</div>
+        <div class="rule-text"><strong>Butonul de rezultat deschide WhatsApp cu mesaj pre-completat.</strong> Nu se trimite VSL automat. Consultantul primește profilul complet și trimite manual VSL-ul corespunzător tipologiei primare. Dacă tipologia secundară e semnificativ diferită, consultantul trimite și VSL-ul secundar.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">8</div>
+        <div class="rule-text"><strong>Quote-urile lui Victor după Q1, Q2, Q3 sunt obligatorii.</strong> Apar imediat după ce omul selectează răspunsul, înainte de trecerea la ecranul următor. Construiesc autoritate și reduc abandonul. Nu sunt opționale.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">9</div>
+        <div class="rule-text"><strong>Unele întrebări din faza 2 și 3 pot fi adaptate pe tipologie.</strong> „Ce ai încercat?" (E16) și „Cum arată concret problema?" (E15) pot avea opțiuni diferite per tipologie. Exemplu: pentru R (Recrutare) opțiunile sunt despre angajare; pentru D (Delegare) despre tentative de delegare. Implementare: același pattern ca branch questions din codul original.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">10</div>
+        <div class="rule-text"><strong>Textele de rezultat și imaginile de la Victor — furnizate separat.</strong> Nu inventați texte pentru ecranele de rezultat. Nu folosiți imaginile existente din assets/cases/ — acestea sunt ale altui proiect. Victor furnizează textele și imaginile cazurilor reale înainte de popularea fișierelor <code>results/</code> și <code>assets/</code>.</div>
+      </div>
+    </div>
+
+    <div class="callout alert">
+      <div class="callout-title">Diferența față de briefing-ul v1</div>
+      <p>Versiunea anterioară trata quizul ca scoring uniform pe toate ecranele. <strong>Aceasta e arhitectura corectă:</strong> clasificare rapidă în 3 întrebări → profilare individuală completă → pain funnel pe 3 niveluri → scop. Fiecare fază are un rol distinct și clar. Implementarea trebuie să respecte această separare — nu amestecați logica de scoring cu colectarea datelor de profil sau pain funnel.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  <div class="doc-footer-inner">
+    <div class="doc-footer-text">VICTOR MORAR × ANTIGRAVITY — QUIZ FUNNEL BRIEFING v2</div>
+    <div class="doc-footer-text">Confidențial · Nu se distribuie</div>
+  </div>
+</div>
+
+</body>
+</html>

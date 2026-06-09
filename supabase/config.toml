@@ -1,0 +1,4 @@
+project_id = "mfgsmjqvcwhspbsvqaam"
+
+[functions.generate-pdf-text]
+verify_jwt = false

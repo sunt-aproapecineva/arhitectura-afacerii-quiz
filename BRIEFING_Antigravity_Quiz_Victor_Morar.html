@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing Tehnic — Quiz Victor Morar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --accent: #e8ff3c;
+    --accent2: #3cffe8;
+    --gray-1: #1a1a1a;
+    --gray-2: #2a2a2a;
+    --gray-3: #3a3a3a;
+    --gray-4: #666;
+    --gray-5: #999;
+    --text: #e8e8e0;
+    --text-dim: #888;
+    --border: #2a2a2a;
+    --R: #ff6b6b;
+    --Re: #ffa94d;
+    --M: #ffd43b;
+    --D: #69db7c;
+    --C: #4dabf7;
+    --S: #cc5de8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* HEADER */
+  .doc-header {
+    background: var(--gray-1);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 64px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .doc-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .doc-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .doc-subtitle {
+    font-size: 16px;
+    color: var(--gray-5);
+    font-weight: 300;
+  }
+  .doc-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .doc-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .doc-meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .doc-meta-value {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 64px;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 56px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  .callout-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .callout p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--text); }
+
+  /* WHAT CHANGES vs STAYS */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .col-card {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+  }
+  .col-card-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-card.stays .col-card-title { color: var(--accent2); }
+  .col-card.changes .col-card-title { color: var(--accent); }
+  .col-card ul { list-style: none; }
+  .col-card ul li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--gray-2);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .col-card ul li:last-child { border-bottom: none; }
+  .col-card ul li::before {
+    content: '—';
+    color: var(--gray-4);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .col-card.stays ul li::before { color: var(--accent2); }
+  .col-card.changes ul li::before { color: var(--accent); }
+
+  /* TIPOLOGII */
+  .tipologie-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .tipologie-card {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tipologie-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .tip-R::before { background: var(--R); }
+  .tip-Re::before { background: var(--Re); }
+  .tip-M::before { background: var(--M); }
+  .tip-D::before { background: var(--D); }
+  .tip-C::before { background: var(--C); }
+  .tip-S::before { background: var(--S); }
+
+  .tip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+  }
+  .tip-R .tip-badge { background: rgba(255,107,107,0.15); color: var(--R); }
+  .tip-Re .tip-badge { background: rgba(255,169,77,0.15); color: var(--Re); }
+  .tip-M .tip-badge { background: rgba(255,212,59,0.15); color: var(--M); }
+  .tip-D .tip-badge { background: rgba(105,219,124,0.15); color: var(--D); }
+  .tip-C .tip-badge { background: rgba(77,171,247,0.15); color: var(--C); }
+  .tip-S .tip-badge { background: rgba(204,93,232,0.15); color: var(--S); }
+
+  .tipologie-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .tipologie-pain {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .tipologie-etape {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+  }
+  .tipologie-hook {
+    font-size: 11px;
+    font-style: italic;
+    color: var(--gray-5);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  /* SCORING TABLE */
+  .scoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  .scoring-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gray-4);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--gray-1);
+  }
+  .scoring-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-2);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  .scoring-table tr:hover td { background: var(--gray-1); }
+  .score-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+    display: inline-block;
+  }
+  .s-R { background: rgba(255,107,107,0.2); color: var(--R); }
+  .s-Re { background: rgba(255,169,77,0.2); color: var(--Re); }
+  .s-M { background: rgba(255,212,59,0.2); color: var(--M); }
+  .s-D { background: rgba(105,219,124,0.2); color: var(--D); }
+  .s-C { background: rgba(77,171,247,0.2); color: var(--C); }
+  .s-S { background: rgba(204,93,232,0.2); color: var(--S); }
+
+  /* FLOW DIAGRAM */
+  .flow-diagram {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 0;
+  }
+  .flow-node {
+    background: var(--gray-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .flow-node-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--gray-4);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .flow-node-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    white-space: nowrap;
+  }
+  .flow-node-sub {
+    font-size: 10px;
+    color: var(--gray-5);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  .flow-node.accent {
+    background: rgba(232,255,60,0.1);
+    border-color: rgba(232,255,60,0.3);
+  }
+  .flow-node.accent .flow-node-label { color: var(--accent); }
+  .flow-node.result {
+    background: rgba(60,255,232,0.08);
+    border-color: rgba(60,255,232,0.25);
+  }
+  .flow-node.result .flow-node-label { color: var(--accent2); }
+  .flow-arrow {
+    font-size: 14px;
+    color: var(--gray-4);
+    padding: 0 10px;
+    flex-shrink: 0;
+  }
+  .flow-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  /* ECRANE LIST */
+  .ecrane-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .ecran-row {
+    display: grid;
+    grid-template-columns: 40px 160px 1fr 120px;
+    align-items: start;
+    gap: 16px;
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 12px 16px;
+  }
+  .ecran-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-4);
+    padding-top: 2px;
+  }
+  .ecran-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    align-self: start;
+  }
+  .type-hook { background: rgba(232,255,60,0.1); color: var(--accent); }
+  .type-data { background: rgba(77,171,247,0.1); color: var(--C); }
+  .type-q { background: rgba(105,219,124,0.1); color: var(--D); }
+  .type-sandler { background: rgba(255,107,107,0.1); color: var(--R); }
+  .type-transition { background: rgba(204,93,232,0.1); color: var(--S); }
+  .type-result { background: rgba(60,255,232,0.1); color: var(--accent2); }
+  .ecran-content {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .ecran-content strong { color: var(--text); font-weight: 600; }
+  .ecran-content em { color: var(--gray-5); font-style: italic; }
+  .ecran-scoring {
+    font-size: 12px;
+    color: var(--gray-5);
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .code-block pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.7;
+    white-space: pre;
+  }
+  .code-comment { color: var(--gray-4); }
+  .code-key { color: var(--accent2); }
+  .code-string { color: var(--accent); }
+  .code-type { color: var(--Re); }
+
+  /* QUOTE */
+  .victor-quote {
+    background: var(--gray-1);
+    border-left: 3px solid var(--gray-3);
+    padding: 16px 20px;
+    border-radius: 4px;
+    margin: 12px 0;
+  }
+  .victor-quote p {
+    font-size: 13px;
+    color: var(--gray-5);
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .victor-quote cite {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+  }
+
+  /* FILES MAP */
+  .files-map {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .file-group {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+  }
+  .file-group-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .file-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--gray-2);
+  }
+  .file-item:last-child { border-bottom: none; }
+  .file-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .file-action {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+  .tag-modify {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .tag-m { background: rgba(232,255,60,0.15); color: var(--accent); }
+  .tag-new { background: rgba(60,255,232,0.15); color: var(--accent2); }
+  .tag-keep { background: rgba(105,219,124,0.1); color: var(--D); }
+
+  /* RESULT SCREEN */
+  .result-anatomy {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .result-section {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .result-section:last-child { border-bottom: none; }
+  .result-zone {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gray-4);
+    padding-top: 2px;
+  }
+  .result-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .result-desc strong { color: var(--text); }
+
+  /* RULES */
+  .rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .rule-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 14px 16px;
+    align-items: start;
+  }
+  .rule-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    padding-top: 1px;
+  }
+  .rule-text {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .rule-text strong { color: var(--text); }
+
+  /* TOC */
+  .toc {
+    background: var(--gray-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 40px;
+  }
+  .toc-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+  }
+  .toc-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--gray-2);
+    transition: color 0.15s;
+  }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item:hover { color: var(--white); }
+  .toc-item-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-4);
+    width: 24px;
+    flex-shrink: 0;
+  }
+
+  /* SEPARATOR */
+  .sep {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--gray-2);
+    color: var(--accent2);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  p { margin-bottom: 12px; color: var(--text-dim); font-size: 14px; line-height: 1.65; }
+  p strong { color: var(--text); }
+  h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 12px; margin-top: 24px; }
+
+  @media print {
+    body { background: white; color: black; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="doc-tag">Briefing Tehnic • Confidențial</div>
+  <div class="doc-title">Quiz Victor Morar<br>— Ghid de Implementare</div>
+  <div class="doc-subtitle">De la codul existent la quiz-ul cu cele 6 tipologii ale lui Victor</div>
+  <div class="doc-meta">
+    <div class="doc-meta-item">
+      <span class="doc-meta-label">Proiect</span>
+      <span class="doc-meta-value">Arhitectura Afacerii — Quiz Funnel</span>
+    </div>
+    <div class="doc-meta-item">
+      <span class="doc-meta-label">Baza de cod</span>
+      <span class="doc-meta-value">quiz-files.zip (React + TypeScript)</span>
+    </div>
+    <div class="doc-meta-item">
+      <span class="doc-meta-label">Tipologii</span>
+      <span class="doc-meta-value">6 · Scoring acumulat</span>
+    </div>
+    <div class="doc-meta-item">
+      <span class="doc-meta-label">Ecrane</span>
+      <span class="doc-meta-value">16</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="section">
+    <div class="toc">
+      <div class="toc-title">Cuprins</div>
+      <div class="toc-items">
+        <a href="#context" class="toc-item"><span class="toc-item-num">01</span>Context — ce există, ce se construiește</a>
+        <a href="#schimbari" class="toc-item"><span class="toc-item-num">02</span>Ce se modifică vs ce rămâne intact</a>
+        <a href="#tipologii" class="toc-item"><span class="toc-item-num">03</span>Cele 6 tipologii — definiții complete + scoring</a>
+        <a href="#logica" class="toc-item"><span class="toc-item-num">04</span>Logica de clasificare — cum funcționează scoring-ul</a>
+        <a href="#flux" class="toc-item"><span class="toc-item-num">05</span>Fluxul complet — 16 ecrane</a>
+        <a href="#intrebari" class="toc-item"><span class="toc-item-num">06</span>Întrebările + răspunsurile cu scoring</a>
+        <a href="#rezultat" class="toc-item"><span class="toc-item-num">07</span>Ecranul de rezultat — anatomie</a>
+        <a href="#fisiere" class="toc-item"><span class="toc-item-num">08</span>Fișierele de modificat — mapare exactă</a>
+        <a href="#reguli" class="toc-item"><span class="toc-item-num">09</span>Reguli de implementare</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 CONTEXT -->
+  <div class="section" id="context">
+    <div class="section-label">01</div>
+    <div class="section-title">Context — Ce există, ce se construiește</div>
+
+    <div class="callout">
+      <div class="callout-title">Principiul de bază</div>
+      <p>Nu reconstruim nimic de la zero. Codul existent (<strong>quiz-files.zip</strong>) conține o infrastructură React + TypeScript completă și funcțională. Sarcina este să <strong>înlocuim conținutul</strong> (tipologii, întrebări, texte, scoring) și să <strong>adaptăm logica de clasificare</strong> de la 3 axe la 6 tipologii prin scoring acumulat.</p>
+    </div>
+
+    <p><strong>Codul existent</strong> a fost construit pentru un alt proiect (educație online pentru femei, expert Daniela Ionaș, 3 profiluri: BEG/EXP/NEW). Arhitectura tehnică este solidă și reutilizabilă complet.</p>
+
+    <p><strong>Quiz-ul lui Victor</strong> funcționează pe o logică diferită: nu există o primă întrebare care clasifică omul — clasificarea rezultă din <strong>scorul acumulat</strong> pe parcursul tuturor întrebărilor. La final, tipologia cu cele mai multe puncte câștigă.</p>
+
+    <div class="two-col">
+      <div class="col-card stays">
+        <div class="col-card-title">✓ Rămâne intact</div>
+        <ul>
+          <li>Toate componentele vizuale React</li>
+          <li>Mașina de stare (quizReducer)</li>
+          <li>Sistemul de ecrane și navigare</li>
+          <li>Colectarea datelor (nume, email, Instagram, telefon)</li>
+          <li>Micro-validările după fiecare răspuns</li>
+          <li>Pauzele sociale (PAUSE_A, PAUSE_B, PAUSE_C)</li>
+          <li>Blocul Sandler Pain (cost, impact, urgență)</li>
+          <li>Ecranul de rezultat și CTA</li>
+          <li>Sistemul de temperatură HOT/WARM/COLD</li>
+          <li>Posibilitatea multi-select la unele întrebări</li>
+        </ul>
+      </div>
+      <div class="col-card changes">
+        <div class="col-card-title">↻ Se modifică</div>
+        <ul>
+          <li><code>types.ts</code> — ProfileAxis: 3 → 6 tipologii</li>
+          <li><code>classification.ts</code> — logică scoring acumulat</li>
+          <li><code>machine.ts</code> — eliminat ramificarea după Q1</li>
+          <li><code>questions/universal.ts</code> — întreg conținutul</li>
+          <li><code>questions/branch-*.ts</code> — nu mai există ramuri</li>
+          <li><code>questions/extra.ts</code> — întrebări de calificare</li>
+          <li><code>results/</code> — 6 template-uri noi de rezultat</li>
+          <li><code>profile-reveals.ts</code> — 6 texte noi</li>
+          <li><code>intro.ts</code> — textul de intro al lui Victor</li>
+          <li><code>social-proof/</code> — cazurile reale ale lui Victor</li>
+          <li>Imaginile din <code>assets/cases/</code> — înlocuite</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 SCHIMBARI -->
+  <div class="section" id="schimbari">
+    <div class="section-label">02</div>
+    <div class="section-title">Diferența fundamentală de logică</div>
+
+    <p>Codul existent clasifică omul <strong>la prima întrebare</strong> — omul se auto-declară (BEG/EXP/NEW) și tot ce urmează e ramificat pe acea axă. Quiz-ul lui Victor funcționează invers: <strong>omul nu știe în ce tipologie intră</strong>. Clasificarea e invizibilă pentru el și rezultă din toate răspunsurile.</p>
+
+    <div class="flow-diagram">
+      <div style="margin-bottom: 24px;">
+        <div class="flow-note" style="text-align:left; margin-bottom: 12px; color: var(--gray-5); font-size: 11px;">LOGICA VECHE (3 axe, auto-declarare)</div>
+        <div class="flow-row">
+          <div class="flow-node">
+            <div class="flow-node-num">Q1</div>
+            <div class="flow-node-label">Omul alege</div>
+            <div class="flow-node-sub">BEG / EXP / NEW</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">
+            <div class="flow-node-num">Q2–Q7</div>
+            <div class="flow-node-label">Ramifică pe axă</div>
+            <div class="flow-node-sub">întrebări diferite</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node result">
+            <div class="flow-node-num">Rezultat</div>
+            <div class="flow-node-label">3 template-uri</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="flow-note" style="text-align:left; margin-bottom: 12px; color: var(--accent); font-size: 11px;">LOGICA NOUĂ (6 tipologii, scoring acumulat)</div>
+        <div class="flow-row">
+          <div class="flow-node accent">
+            <div class="flow-node-num">Q1–Q6</div>
+            <div class="flow-node-label">Toate întrebările</div>
+            <div class="flow-node-sub">acumulează puncte</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node accent">
+            <div class="flow-node-num">Scoring</div>
+            <div class="flow-node-label">6 contoare</div>
+            <div class="flow-node-sub">R · Re · M · D · C · S</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node accent">
+            <div class="flow-node-num">Sandler</div>
+            <div class="flow-node-label">Cost + Impact</div>
+            <div class="flow-node-sub">fără scoring</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node result">
+            <div class="flow-node-num">Rezultat</div>
+            <div class="flow-node-label">Max score câștigă</div>
+            <div class="flow-node-sub">primar + secundar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>În <code>QuizState</code>, câmpul <code>profileAxis</code> nu mai e setat după Q1 — e setat abia la final, de funcția de clasificare. Pe parcurs, starea ține un obiect de scoruri: <code>scores: Record&lt;ProfileAxis, number&gt;</code>.</p>
+  </div>
+
+  <!-- 03 TIPOLOGII -->
+  <div class="section" id="tipologii">
+    <div class="section-label">03</div>
+    <div class="section-title">Cele 6 Tipologii — Definiții Complete</div>
+
+    <div class="callout">
+      <div class="callout-title">Principiu</div>
+      <p>Tipologiile sunt bazate pe <strong>problema structurală</strong>, nu pe starea emoțională. Fiecare antreprenor se regăsește în UNA ca problemă principală. Fiecare tipologie are o culoare de identificare folosită consistent în tot codul și UI.</p>
+    </div>
+
+    <div class="tipologie-grid">
+
+      <div class="tipologie-card tip-R">
+        <div class="tip-badge">R · Recrutare</div>
+        <div class="tipologie-name">Nu găsesc oameni buni</div>
+        <div class="tipologie-pain">Angajează în panică, ia primul care apare. Cercul vicios: angajează → nu merge → concediază → angajează. Crede că problema e piața muncii.</div>
+        <div class="tipologie-etape">Curs → Etapa 2 + Etapa 3</div>
+        <div class="tipologie-hook">"Nu oamenii sunt problema. E lipsa procesului de recrutare."</div>
+      </div>
+
+      <div class="tipologie-card tip-Re">
+        <div class="tip-badge">Re · Retenție</div>
+        <div class="tipologie-name">Formez oameni care poi pleacă</div>
+        <div class="tipologie-pain">Investește luni în formare. Fix când omul devine productiv, pleacă la concurență. Know-how-ul e în capul oamenilor, nu în procese documentate.</div>
+        <div class="tipologie-etape">Curs → Etapa 3 + Etapa 4</div>
+        <div class="tipologie-hook">"Dacă expertiza e doar în capul oamenilor, normal că pleacă cu ea."</div>
+      </div>
+
+      <div class="tipologie-card tip-M">
+        <div class="tip-badge">M · Motivație</div>
+        <div class="tipologie-name">Plătesc dar nu primesc rezultat</div>
+        <div class="tipologie-pain">Angajații vin la program, nu la performanță. Salariu fix fără KPI. Profitul per angajat scade cu fiecare om nou. Bonusurile nu schimbă nimic.</div>
+        <div class="tipologie-etape">Curs → Etapa 4</div>
+        <div class="tipologie-hook">"Salariul fix fără KPI omoară responsabilitatea."</div>
+      </div>
+
+      <div class="tipologie-card tip-D">
+        <div class="tip-badge">D · Delegare</div>
+        <div class="tipologie-name">Fac eu totul, că altfel iese prost</div>
+        <div class="tipologie-pain">El ESTE businessul. 12+ ore/zi, telefonul mereu pornit. A încercat să delege — tot el a refăcut. Cea mai frecventă tipologie din audiența lui Victor.</div>
+        <div class="tipologie-etape">Curs → Etapa 1 + Etapa 5</div>
+        <div class="tipologie-hook">"Le-ai dat sarcini fără să le dai un SISTEM."</div>
+      </div>
+
+      <div class="tipologie-card tip-C">
+        <div class="tip-badge">C · Control</div>
+        <div class="tipologie-name">Nu știu ce se întâmplă în firma mea</div>
+        <div class="tipologie-pain">Fără cifre, fără raportare, decizii pe instinct. Află că ceva nu merge doar când e deja dezastru. Pierde bani fără să știe unde.</div>
+        <div class="tipologie-etape">Curs → Etapa 4</div>
+        <div class="tipologie-hook">"Dacă nu măsori, nu poți îmbunătăți."</div>
+      </div>
+
+      <div class="tipologie-card tip-S">
+        <div class="tip-badge">S · Structură</div>
+        <div class="tipologie-name">Cresc, dar totul se complică</div>
+        <div class="tipologie-pain">Cifra urcă, echipa crește, dar fiecare manager face cum vrea. Nu există organigramă reală, nu există procese standard. Haosul crește odată cu firma.</div>
+        <div class="tipologie-etape">Curs → Etapa 2 + 3 + 6</div>
+        <div class="tipologie-hook">"Nu poți scala haosul. Întâi faci SISTEM, apoi crești."</div>
+      </div>
+
+    </div>
+
+    <h4>Maparea tipologii → etape curs</h4>
+    <table class="scoring-table">
+      <thead>
+        <tr>
+          <th>Cod</th>
+          <th>Tipologie</th>
+          <th>Problema structurală</th>
+          <th>Etape curs</th>
+          <th>Mesaj cheie</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="score-badge s-R">R</span></td>
+          <td>Nu găsesc oameni buni</td>
+          <td>Recrutare</td>
+          <td>2 + 3</td>
+          <td>Angajarea e tehnologie, nu noroc</td>
+        </tr>
+        <tr>
+          <td><span class="score-badge s-Re">Re</span></td>
+          <td>Formez oameni care poi pleacă</td>
+          <td>Retenție</td>
+          <td>3 + 4</td>
+          <td>Pune know-how în sistem, nu în cap</td>
+        </tr>
+        <tr>
+          <td><span class="score-badge s-M">M</span></td>
+          <td>Plătesc fără rezultat</td>
+          <td>Motivație / KPI</td>
+          <td>4</td>
+          <td>Salariu fix omoară responsabilitatea</td>
+        </tr>
+        <tr>
+          <td><span class="score-badge s-D">D</span></td>
+          <td>Fac eu totul</td>
+          <td>Delegare</td>
+          <td>1 + 5</td>
+          <td>Sarcini fără sistem = eșec garantat</td>
+        </tr>
+        <tr>
+          <td><span class="score-badge s-C">C</span></td>
+          <td>Nu știu ce se întâmplă</td>
+          <td>Control / Raportare</td>
+          <td>4</td>
+          <td>Zbori fără instrumente de bord</td>
+        </tr>
+        <tr>
+          <td><span class="score-badge s-S">S</span></td>
+          <td>Cresc dar se complică</td>
+          <td>Structură / Scalare</td>
+          <td>2 + 3 + 6</td>
+          <td>Nu poți scala haosul</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 04 LOGICA -->
+  <div class="section" id="logica">
+    <div class="section-label">04</div>
+    <div class="section-title">Logica de Clasificare — Cum Funcționează Scoring-ul</div>
+
+    <p>Fiecare răspuns adaugă puncte la unul sau mai multe contoare de tipologie. La final, <code>classification.ts</code> citește contoarele și returnează tipologia cu scorul maxim ca <strong>primară</strong> și a doua ca <strong>secundară</strong>.</p>
+
+    <div class="code-block">
+      <pre><span class="code-comment">// types.ts — modificări necesare</span>
+
+<span class="code-key">export type</span> <span class="code-type">ProfileAxis</span> = 
+  <span class="code-string">'R'</span>   <span class="code-comment">// Recrutare</span>
+  | <span class="code-string">'Re'</span>  <span class="code-comment">// Retenție</span>
+  | <span class="code-string">'M'</span>   <span class="code-comment">// Motivație</span>
+  | <span class="code-string">'D'</span>   <span class="code-comment">// Delegare</span>
+  | <span class="code-string">'C'</span>   <span class="code-comment">// Control</span>
+  | <span class="code-string">'S'</span>;  <span class="code-comment">// Structură</span>
+
+<span class="code-comment">// În QuizState — câmp nou de adăugat</span>
+<span class="code-key">scores</span>: <span class="code-type">Record</span>&lt;<span class="code-type">ProfileAxis</span>, <span class="code-type">number</span>&gt;;
+
+<span class="code-comment">// Inițializare în createInitialState()</span>
+scores: { R: 0, Re: 0, M: 0, D: 0, C: 0, S: 0 }</pre>
+    </div>
+
+    <div class="code-block">
+      <pre><span class="code-comment">// classification.ts — logica nouă completă</span>
+
+<span class="code-key">export function</span> <span class="code-type">performClassification</span>(state: QuizState): QuizState {
+  <span class="code-key">const</span> scores = state.scores;
+  
+  <span class="code-comment">// Găsește tipologia primară (max score)</span>
+  <span class="code-key">const</span> primary = (Object.keys(scores) <span class="code-key">as</span> ProfileAxis[])
+    .reduce((a, b) => scores[a] >= scores[b] ? a : b);
+  
+  <span class="code-comment">// Găsește tipologia secundară (al doilea max)</span>
+  <span class="code-key">const</span> secondary = (Object.keys(scores) <span class="code-key">as</span> ProfileAxis[])
+    .filter(k => k !== primary)
+    .reduce((a, b) => scores[a] >= scores[b] ? a : b);
+
+  <span class="code-key">return</span> {
+    ...state,
+    phase: <span class="code-string">'PROFILE_REVEAL'</span>,
+    profileAxis: primary,
+    secondaryProfile: secondary,
+    resolvedProfile: primary,
+  };
+}
+
+<span class="code-comment">// TIE-BREAKER: dacă 2 tipologii au scor egal,</span>
+<span class="code-comment">// Q6 (butonul magic) decide — are weight x2.</span>
+<span class="code-comment">// Aplică weight la adăugarea scorului din Q6:</span>
+<span class="code-comment">// scores[code] += points * 2</span></pre>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Cum se adaugă punctele în machine.ts</div>
+      <p>Fiecare event de tip <code>ANSWER_Qx</code> primește în payload un array de scoruri: <code>scores: Partial&lt;Record&lt;ProfileAxis, number&gt;&gt;</code>. Reducer-ul face <code>merge(state.scores, payload.scores)</code> — adună punctele la contoarele existente. <strong>Nu înlocuiește, adună.</strong></p>
+    </div>
+  </div>
+
+  <!-- 05 FLUX -->
+  <div class="section" id="flux">
+    <div class="section-label">05</div>
+    <div class="section-title">Fluxul Complet — 16 Ecrane</div>
+
+    <div class="ecrane-list">
+
+      <div class="ecran-row">
+        <div class="ecran-num">E1</div>
+        <div><span class="ecran-type type-hook">Hook</span></div>
+        <div class="ecran-content">
+          <strong>„Afacerea ta are o problemă principală care te ține blocat. Majoritatea antreprenorilor nu știu care e."</strong><br>
+          <em>Text: „Am lucrat cu sute de antreprenori și am descoperit că există exact 6 probleme structurale. Tu ai UNA principală. Dacă o rezolvi pe aia — restul se deblochează. Quiz: 3 minute. La final: video personalizat cu soluția ta."</em><br>
+          Buton: <strong>[Vreau să aflu]</strong>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E2</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content">
+          <strong>Prenume</strong> — câmp text simplu.<br>
+          <em>Barieră zero. Micro-commitment. Folosit pentru personalizare din ecranul următor.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E3</div>
+        <div><span class="ecran-type type-q">Q1</span></div>
+        <div class="ecran-content">
+          <strong>[PRENUME], care e cea mai mare frustrare a ta legată de echipă?</strong><br>
+          ☑ ALEGE MAI MULTE<br>
+          <em>Quote Victor după întrebare.</em>
+        </div>
+        <div class="ecran-scoring">
+          <span class="score-badge s-R">R+3</span><br>
+          <span class="score-badge s-Re">Re+3</span><br>
+          <span class="score-badge s-M">M+3</span><br>
+          <span class="score-badge s-D">D+3</span><br>
+          <span class="score-badge s-S">S+2</span> <span class="score-badge s-C">C+2</span>
+        </div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E4</div>
+        <div><span class="ecran-type type-q">Q2</span></div>
+        <div class="ecran-content">
+          <strong>Cum arată o zi de lucru tipică pentru tine?</strong><br>
+          ● ALEGE UNA<br>
+          <em>Quote Victor după întrebare.</em>
+        </div>
+        <div class="ecran-scoring">
+          <span class="score-badge s-R">R+3</span><br>
+          <span class="score-badge s-Re">Re+3</span><br>
+          <span class="score-badge s-D">D+2</span> <span class="score-badge s-M">M+2</span><br>
+          <span class="score-badge s-D">D+3</span><br>
+          <span class="score-badge s-S">S+3</span> <span class="score-badge s-C">C+1</span>
+        </div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E5</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content">
+          <strong>Username Instagram</strong><br>
+          <em>„Ca să-ți trimit rezultatul și pe Instagram." — Colectat după 2 întrebări când omul e deja implicat.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E6</div>
+        <div><span class="ecran-type type-q">Q3</span></div>
+        <div class="ecran-content">
+          <strong>Unde simți că pierzi cei mai mulți bani fără să-ți dai seama?</strong><br>
+          ☑ ALEGE MAI MULTE<br>
+          <em>Quote Victor după întrebare.</em>
+        </div>
+        <div class="ecran-scoring">
+          <span class="score-badge s-R">R+2</span> <span class="score-badge s-Re">Re+2</span><br>
+          <span class="score-badge s-M">M+3</span><br>
+          <span class="score-badge s-D">D+3</span><br>
+          <span class="score-badge s-C">C+3</span><br>
+          <span class="score-badge s-S">S+3</span>
+        </div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E7</div>
+        <div><span class="ecran-type type-q">Q4</span></div>
+        <div class="ecran-content">
+          <strong>Dacă pleci 2 săptămâni în vacanță și îți închizi telefonul, ce găsești?</strong><br>
+          ● ALEGE UNA — <em>Întrebare discriminatorie puternică.</em><br>
+          <em>Quote Victor după întrebare.</em>
+        </div>
+        <div class="ecran-scoring">
+          <span class="score-badge s-D">D+3</span><br>
+          <span class="score-badge s-D">D+2</span> <span class="score-badge s-Re">Re+1</span><br>
+          <span class="score-badge s-Re">Re+3</span><br>
+          <span class="score-badge s-C">C+3</span><br>
+          <span class="score-badge s-S">S+3</span><br>
+          <span class="score-badge s-D">D+2</span> <span class="score-badge s-R">R+1</span>
+        </div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E8</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content">
+          <strong>Email</strong><br>
+          <em>„Aproape am terminat. Rezultatul personalizat îl primești pe email." — Colectat după 4 întrebări.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E9</div>
+        <div><span class="ecran-type type-q">Q5</span></div>
+        <div class="ecran-content">
+          <strong>Ce ai făcut până acum ca să rezolvi problema?</strong><br>
+          ☑ ALEGE MAI MULTE<br>
+          <em>Quote Victor după întrebare.</em>
+        </div>
+        <div class="ecran-scoring">
+          <span class="score-badge s-R">R+3</span><br>
+          <span class="score-badge s-Re">Re+3</span><br>
+          <span class="score-badge s-M">M+3</span><br>
+          <span class="score-badge s-D">D+3</span><br>
+          <span class="score-badge s-C">C+2</span> <span class="score-badge s-S">S+2</span><br>
+          <span class="score-badge s-D">D+2</span> <span class="score-badge s-C">C+1</span>
+        </div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E10</div>
+        <div><span class="ecran-type type-q">Q6</span></div>
+        <div class="ecran-content">
+          <strong>Dacă ai un buton magic care rezolvă O SINGURĂ PROBLEMĂ, ce alegi?</strong><br>
+          ● ALEGE UNA — <strong>TIE-BREAKER. Dacă 2 tipologii sunt la egalitate, Q6 decide. Scor x2.</strong><br>
+          <em>Quote Victor după întrebare.</em>
+        </div>
+        <div class="ecran-scoring">
+          <span class="score-badge s-R">R+3</span><br>
+          <span class="score-badge s-Re">Re+3</span><br>
+          <span class="score-badge s-M">M+3</span><br>
+          <span class="score-badge s-D">D+3</span><br>
+          <span class="score-badge s-C">C+3</span><br>
+          <span class="score-badge s-S">S+3</span>
+        </div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E11</div>
+        <div><span class="ecran-type type-data">Date</span></div>
+        <div class="ecran-content">
+          <strong>Număr de telefon (obligatoriu)</strong><br>
+          <em>„Dacă diagnostica arată o problemă urgentă, te sunăm în 24h cu o recomandare concretă." — Colectat după 6 întrebări. Omul e full committed.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E12</div>
+        <div><span class="ecran-type type-sandler">Sandler 1</span></div>
+        <div class="ecran-content">
+          <strong>[PRENUME], cât te costă această problemă PE LUNĂ?</strong><br>
+          ● ALEGE UNA — Sub 1.000€ / 1.000–5.000€ / 5.000–10.000€ / Peste 10.000€ sau nu știu<br>
+          <em>Nu acumulează puncte. Scop: aprofundarea durerii.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E13</div>
+        <div><span class="ecran-type type-sandler">Sandler 2</span></div>
+        <div class="ecran-content">
+          <strong>Ce impact are asupra ta PERSONAL?</strong><br>
+          ☑ ALEGE MAI MULTE — Familie / Sport / Relație / Prezență / Copii<br>
+          <em>Nu acumulează puncte. Scop: conectarea la costul personal.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E14</div>
+        <div><span class="ecran-type type-sandler">Sandler 3</span></div>
+        <div class="ecran-content">
+          <strong>Dacă nu schimbi NIMIC în 6 luni, ce se va întâmpla?</strong><br>
+          ☑ ALEGE MAI MULTE — Pierd bani / Pierd oameni / Burnout / Concurență / Vând firma<br>
+          <em>Nu acumulează puncte. Scop: urgență.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E15</div>
+        <div><span class="ecran-type type-transition">Tranziție</span></div>
+        <div class="ecran-content">
+          <strong>„[PRENUME], vești bune. Problema ta are soluție."</strong><br>
+          Buton: <strong>[Arată-mi rezultatul]</strong>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+      <div class="ecran-row">
+        <div class="ecran-num">E16</div>
+        <div><span class="ecran-type type-result">Rezultat</span></div>
+        <div class="ecran-content">
+          <strong>Ecranul de rezultat personalizat</strong><br>
+          Problema primară: [TIPOLOGIA cu scor max]<br>
+          Problema secundară: [TIPOLOGIA cu scor 2]<br>
+          Text descriere + VSL 1 (primar) + VSL 2 (secundar dacă diferit) + CTA listă așteptare<br>
+          <em>Redirecționare WhatsApp → consultantul trimite videoul manual.</em>
+        </div>
+        <div class="ecran-scoring">—</div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Quote-urile lui Victor — după fiecare întrebare</div>
+      <p>După fiecare întrebare cu scoring (E3–E10) apare un citat al lui Victor care validează situația și construiește autoritate. <strong>Acestea nu sunt opționale</strong> — sunt parte din mecanismul de conversie. Le găsești detaliat în secțiunea 06.</p>
+    </div>
+  </div>
+
+  <!-- 06 INTREBARI -->
+  <div class="section" id="intrebari">
+    <div class="section-label">06</div>
+    <div class="section-title">Întrebările — Conținut Complet + Scoring</div>
+
+    <h4>Q1 — Frustrarea legată de echipă (MULTI-SELECT)</h4>
+    <table class="scoring-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Nu găsesc oameni buni. Angajez în panică și tot eu rămân cu treaba.</td><td><span class="score-badge s-R">R+3</span></td></tr>
+        <tr><td>B</td><td>ÎNVĂȚ oameni, și apoi pleacă. Unii își deschid firme concurente.</td><td><span class="score-badge s-Re">Re+3</span></td></tr>
+        <tr><td>C</td><td>Am oameni, dar nu performează. Vin la program, nu la rezultat.</td><td><span class="score-badge s-M">M+3</span></td></tr>
+        <tr><td>D</td><td>Am oameni, dar tot EU fac munca importantă. Altfel iese prost.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>E</td><td>Echipa e ok, dar fiecare face cum vrea. Nu există standard.</td><td><span class="score-badge s-S">S+2</span> <span class="score-badge s-C">C+2</span></td></tr>
+      </tbody>
+    </table>
+    <div class="victor-quote">
+      <p>„Știi ce am descoperit după 18 ani și 250+ angajați? Problema nu sunt niciodată oamenii. Problema e SISTEMUL în care îi pui. Un om bun într-un sistem prost va părea incompetent. Mereu."</p>
+      <cite>— Victor Morar, după Q1</cite>
+    </div>
+
+    <h4>Q2 — Ziua tipică (SINGLE-SELECT)</h4>
+    <table class="scoring-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Interviuri, anunțuri, probabil concediez pe cineva luna asta.</td><td><span class="score-badge s-R">R+3</span></td></tr>
+        <tr><td>B</td><td>Formez pe cineva nou, pentru că cel vechi a plecat.</td><td><span class="score-badge s-Re">Re+3</span></td></tr>
+        <tr><td>C</td><td>Verific ce au făcut angajații, corectez, refac.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-M">M+2</span></td></tr>
+        <tr><td>D</td><td>Sting focuri de dimineață până seara. Nu ajung la strategice.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>E</td><td>Am ședințe, dar managerii vin cu probleme, nu soluții.</td><td><span class="score-badge s-S">S+3</span> <span class="score-badge s-C">C+1</span></td></tr>
+      </tbody>
+    </table>
+    <div class="victor-quote">
+      <p>„Eu petreceam 60% din timp pe mărunțișuri, 35% management, 5% strategie. Eram cel mai scump angajat din propria firmă — făceam muncă de 500€ cu un cost de 5.000€."</p>
+      <cite>— Victor Morar, după Q2</cite>
+    </div>
+
+    <h4>Q3 — Unde pierzi bani (MULTI-SELECT)</h4>
+    <table class="scoring-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Pe angajări greșite. Investesc în oameni care nu rămân.</td><td><span class="score-badge s-R">R+2</span> <span class="score-badge s-Re">Re+2</span></td></tr>
+        <tr><td>B</td><td>Pe salarii. Plătesc oameni care nu aduc rezultat proporțional.</td><td><span class="score-badge s-M">M+3</span></td></tr>
+        <tr><td>C</td><td>Pe timp. Fac eu muncă de 500€ cu un cost real de 5.000€.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>D</td><td>Nu știu exact. Nu am cifre clare.</td><td><span class="score-badge s-C">C+3</span></td></tr>
+        <tr><td>E</td><td>Pe dezordine. Cu cât cresc, cu atât se pierd bani pe drum.</td><td><span class="score-badge s-S">S+3</span></td></tr>
+      </tbody>
+    </table>
+    <div class="victor-quote">
+      <p>„La mine, cu 30 angajați, profitul per angajat era MAI MIC decât cu 10. Creșteam fără sistem. Fiecare om nou aducea haos, nu profit. Am schimbat asta complet."</p>
+      <cite>— Victor Morar, după Q3</cite>
+    </div>
+
+    <h4>Q4 — Testul vacanței (SINGLE-SELECT) — discriminatorie</h4>
+    <table class="scoring-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Haos. Nimeni nu știe ce să facă fără mine.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>B</td><td>Calitate scăzută. Clienți nemulțumiți.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-Re">Re+1</span></td></tr>
+        <tr><td>C</td><td>1–2 oameni cheie au plecat. Au luat clienți cu ei.</td><td><span class="score-badge s-Re">Re+3</span></td></tr>
+        <tr><td>D</td><td>Vânzările au scăzut. Nimeni nu a urmărit cifrele.</td><td><span class="score-badge s-C">C+3</span></td></tr>
+        <tr><td>E</td><td>Fiecare departament a făcut ce a vrut. Zero coordonare.</td><td><span class="score-badge s-S">S+3</span></td></tr>
+        <tr><td>F</td><td>Nici nu pot pleca 3 zile, darămite 2 săptămâni.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-R">R+1</span></td></tr>
+      </tbody>
+    </table>
+    <div class="victor-quote">
+      <p>„Am condus 5 companii și am călătorit în 5 țări anul trecut. Nu am angajați geniali. Am SISTEM."</p>
+      <cite>— Victor Morar, după Q4</cite>
+    </div>
+
+    <h4>Q5 — Ce ai încercat (MULTI-SELECT)</h4>
+    <table class="scoring-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Am schimbat oameni. Am concediat, am angajat. Tot la fel.</td><td><span class="score-badge s-R">R+3</span></td></tr>
+        <tr><td>B</td><td>Am oferit salarii mai mari ca să nu plece. Tot au plecat.</td><td><span class="score-badge s-Re">Re+3</span></td></tr>
+        <tr><td>C</td><td>Am pus bonusuri. Nu se schimbă nimic.</td><td><span class="score-badge s-M">M+3</span></td></tr>
+        <tr><td>D</td><td>Am încercat să deleg. N-a mers. Am făcut-o eu.</td><td><span class="score-badge s-D">D+3</span></td></tr>
+        <tr><td>E</td><td>Am pus CRM/soft. Nimeni nu-l folosește cum trebuie.</td><td><span class="score-badge s-C">C+2</span> <span class="score-badge s-S">S+2</span></td></tr>
+        <tr><td>F</td><td>Nu am făcut nimic concret. Nu am avut timp.</td><td><span class="score-badge s-D">D+2</span> <span class="score-badge s-C">C+1</span></td></tr>
+      </tbody>
+    </table>
+    <div class="victor-quote">
+      <p>„Majoritatea încearcă să rezolve probleme de SISTEM cu soluții de OAMENI. Schimbă angajatul, măresc salariul. Dar problema rămâne. Soluția nu e omul — e sistemul."</p>
+      <cite>— Victor Morar, după Q5</cite>
+    </div>
+
+    <h4>Q6 — Butonul magic (SINGLE-SELECT) — TIE-BREAKER, scor x2</h4>
+    <table class="scoring-table">
+      <thead><tr><th>Opțiune</th><th>Text</th><th>Scoring</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>Flux constant de oameni buni din care să aleg.</td><td><span class="score-badge s-R">R+3</span> ×2</td></tr>
+        <tr><td>B</td><td>Să nu mai plece specialiștii pe care i-am format.</td><td><span class="score-badge s-Re">Re+3</span> ×2</td></tr>
+        <tr><td>C</td><td>Angajați care muncesc pentru REZULTAT, nu salariu.</td><td><span class="score-badge s-M">M+3</span> ×2</td></tr>
+        <tr><td>D</td><td>Să pot lipsi o săptămână fără să se prăbușească nimic.</td><td><span class="score-badge s-D">D+3</span> ×2</td></tr>
+        <tr><td>E</td><td>Să văd în timp real ce se întâmplă în fiecare departament.</td><td><span class="score-badge s-C">C+3</span> ×2</td></tr>
+        <tr><td>F</td><td>Să dublez cifra fără să se dubleze haosul.</td><td><span class="score-badge s-S">S+3</span> ×2</td></tr>
+      </tbody>
+    </table>
+    <div class="victor-quote">
+      <p>„Fiecare problemă are o soluție concretă. Nu generică. O metodă testată în 5 companii reale cu 250+ angajați."</p>
+      <cite>— Victor Morar, după Q6</cite>
+    </div>
+  </div>
+
+  <!-- 07 REZULTAT -->
+  <div class="section" id="rezultat">
+    <div class="section-label">07</div>
+    <div class="section-title">Ecranul de Rezultat — Anatomie</div>
+
+    <p>Ecranul de rezultat (E16) afișează diagnoza personalizată. Conține întotdeauna <strong>tipologia primară</strong> (scor max) și <strong>tipologia secundară</strong> (al doilea scor). Nu afișează scorurile numerice — afișează descrierea și soluția.</p>
+
+    <div class="result-anatomy">
+      <div class="result-section">
+        <div class="result-zone">Antet</div>
+        <div class="result-desc"><strong>[PRENUME], problema ta principală este:</strong><br>Denumirea tipologiei primare + badge culoare</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">Problema primară</div>
+        <div class="result-desc">Descriere scurtă a durerii — 2–3 rânduri. Exact ce simte el. Efectul: „parcă vorbește despre mine."</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">Problema secundară</div>
+        <div class="result-desc">„Ai și o problemă secundară: [tipologia 2]" — scurtă mențiune. Nu intră în detalii.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">VSL Primar</div>
+        <div class="result-desc"><strong>Video embed sau link</strong> — VSL-ul corespunzător tipologiei primare. Trimis manual de consultant prin WhatsApp.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">VSL Secundar</div>
+        <div class="result-desc">Dacă tipologia secundară e diferită de primară — al doilea VSL opțional.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">CTA</div>
+        <div class="result-desc"><strong>„Înscrie-te pe lista de așteptare"</strong> → link lista de așteptare. Variante text pe temperatură HOT/WARM/COLD.</div>
+      </div>
+      <div class="result-section">
+        <div class="result-zone">Social Proof</div>
+        <div class="result-desc">Screenshot sau citat de la un client real al lui Victor. Relevant pentru tipologia identificată.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Fluxul după rezultat</div>
+      <p>Omul e redirecționat pe <strong>WhatsApp</strong>. Consultantul primește datele (nume, email, telefon, Instagram, tipologie primară) și îi trimite manual VSL-ul. <strong>Nu se trimite VSL automat.</strong> Consultantul continuă vânzarea pe DM conform strategiei DM existente.</p>
+    </div>
+
+    <h4>Textele de rezultat per tipologie — structură</h4>
+    <p>Fiecare din cele 6 tipologii are un <code>ResultTemplate</code> cu aceste câmpuri (în <code>results/</code>):</p>
+
+    <div class="code-block">
+      <pre><span class="code-comment">// Structura unui ResultTemplate — același format pentru toate 6</span>
+
+{
+  <span class="code-key">profileLabel</span>: <span class="code-string">'Recrutare'</span>,
+  <span class="code-key">levelLabel</span>: <span class="code-string">'Nu găsesc oameni buni'</span>,
+  <span class="code-key">headline</span>: <span class="code-string">'Nu oamenii sunt problema. E lipsa procesului de recrutare.'</span>,
+  <span class="code-key">sections</span>: [
+    { icon: <span class="code-string">'✦'</span>, title: <span class="code-string">'Ce se întâmplă acum la tine'</span>, body: <span class="code-string">'...'</span> },
+    { icon: <span class="code-string">'✦'</span>, title: <span class="code-string">'Unde e blocajul real'</span>, body: <span class="code-string">'...'</span> },
+    { icon: <span class="code-string">'✦'</span>, title: <span class="code-string">'Ce rezolvă cursul'</span>, body: <span class="code-string">'...'</span> },
+  ],
+  <span class="code-key">cta</span>: {
+    HOT: { text: <span class="code-string">'Intră pe lista de așteptare →'</span>, action: <span class="code-string">'waitlist'</span> },
+    WARM: { text: <span class="code-string">'Rezervă-ți locul →'</span>, action: <span class="code-string">'waitlist'</span> },
+    COLD: { text: <span class="code-string">'Află mai multe →'</span>, action: <span class="code-string">'waitlist'</span> },
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- 08 FISIERE -->
+  <div class="section" id="fisiere">
+    <div class="section-label">08</div>
+    <div class="section-title">Fișierele de Modificat — Mapare Exactă</div>
+
+    <div class="files-map">
+      <div class="file-group">
+        <div class="file-group-title">src/lib/quiz/ — Logica core</div>
+        <div class="file-item">
+          <span class="file-name">types.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> ProfileAxis: 'R'|'Re'|'M'|'D'|'C'|'S'. Adaugă câmpul <code>scores</code> și <code>secondaryProfile</code> în QuizState. Elimină Blockage.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">classification.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Logică nouă: citește <code>scores</code>, returnează max ca primar, al 2-lea max ca secundar.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">machine.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Elimină ramificarea după Q1. Fiecare ANSWER_Qx adună puncte în <code>scores</code>. profileAxis setat doar la clasificare finală.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">temperature.ts</span>
+          <span class="file-action"><span class="tag-modify tag-keep">KEEP</span> Rămâne intact. Temperatura se calculează din Q_GOAL la fel.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/ — Conținut</div>
+        <div class="file-item">
+          <span class="file-name">intro.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Text intro Victor. Author: „Victor Morar". Quote-ul de pe E1.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">profile-reveals.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> 6 intrări în loc de 3. Chei: R, Re, M, D, C, S. Emoji + titlu + descriere per tipologie.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">gifts.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Înlocuit cu CTA-urile lui Victor. URL lista de așteptare. Case studies reale Victor.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/questions/</div>
+        <div class="file-item">
+          <span class="file-name">universal.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Conține Q1–Q6 cu scoring. Nu mai există ramuri. Toate întrebările sunt universale.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">branch-beg.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">DELETE</span> Nu mai există ramuri per profil.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">branch-exp.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">DELETE</span> Nu mai există ramuri per profil.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">branch-new.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">DELETE</span> Nu mai există ramuri per profil.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">extra.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Q_INVEST, Q_FOLLOW, Q_SOURCE, Q_GOAL, Q_EARN adaptate la contextul lui Victor (antreprenori, cifre de afaceri, nu vânzări online).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">index.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Elimină logica de ramificare. Returnează întrebările direct, fără profileAxis check.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/results/</div>
+        <div class="file-item">
+          <span class="file-name">beg.ts → r.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">RENAME + REWRITE</span> Template rezultat pentru tipologia R (Recrutare).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">exp.ts → re.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">RENAME + REWRITE</span> Template rezultat pentru tipologia Re (Retenție).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">new.ts → m.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">RENAME + REWRITE</span> Template rezultat pentru tipologia M (Motivație).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">— → d.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">CREATE</span> Template rezultat pentru tipologia D (Delegare).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">— → c.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">CREATE</span> Template rezultat pentru tipologia C (Control).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">— → s.ts</span>
+          <span class="file-action"><span class="tag-modify tag-new">CREATE</span> Template rezultat pentru tipologia S (Structură).</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">index.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Map actualizat: R→RESULT_R, Re→RESULT_RE, M→RESULT_M, D→RESULT_D, C→RESULT_C, S→RESULT_S.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/content/quiz/social-proof/</div>
+        <div class="file-item">
+          <span class="file-name">pause-a.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Caz real din audiența lui Victor. Un antreprenor care a aplicat sistematizarea + rezultat concret.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">pause-b.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Al doilea caz real. Nu mai e per ProfileAxis — un singur caz universal sau 2–3 variante.</span>
+        </div>
+        <div class="file-item">
+          <span class="file-name">pause-c.ts</span>
+          <span class="file-action"><span class="tag-modify tag-m">MODIFY</span> Al treilea caz real sau citat puternic din Victor.</span>
+        </div>
+      </div>
+
+      <div class="file-group">
+        <div class="file-group-title">src/assets/cases/ — Imagini</div>
+        <div class="file-item">
+          <span class="file-name">*.png / *.jpg</span>
+          <span class="file-action"><span class="tag-modify tag-new">REPLACE</span> Toate imaginile se înlocuiesc cu cazuri reale ale lui Victor. Același format de import în gifts.ts.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Componentele vizuale — nu se modifică</div>
+      <p>Fișierele din <code>src/components/quiz/</code> rămân <strong>complet intacte</strong>: QuizShell, QuestionCard, AnswerOption, ResultScreen, LeadForm, MicroValidation, SocialProofPause, ProfileReveal, CTASection, etc. Acestea primesc datele prin props și le afișează — conținutul se schimbă în <code>content/</code>, nu în <code>components/</code>.</p>
+    </div>
+  </div>
+
+  <!-- 09 REGULI -->
+  <div class="section" id="reguli">
+    <div class="section-label">09</div>
+    <div class="section-title">Reguli de Implementare</div>
+
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div class="rule-text"><strong>Scoring acumulat, nu ramificat.</strong> Nu există o primă întrebare care clasifică omul. Toate cele 6 întrebări cu scoring rulează pentru toți utilizatorii în aceeași ordine. Clasificarea se face o singură dată, la final, în <code>classification.ts</code>.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div class="rule-text"><strong>Q6 = tie-breaker cu weight x2.</strong> Dacă după Q1–Q5 două tipologii au scor egal sau apropiat, răspunsul de la Q6 (butonul magic) decide. Implementare: adaugă punctele din Q6 de două ori, sau multiplică cu 2 în reducer.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div class="rule-text"><strong>Rezultat primar + secundar.</strong> Ecranul de rezultat afișează întotdeauna DOUĂ tipologii: cea cu scor maxim (primară) și a doua ca scor (secundară). <code>QuizState</code> trebuie să stocheze ambele: <code>profileAxis</code> (primar) și <code>secondaryProfile</code> (secundar).</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">4</div>
+        <div class="rule-text"><strong>Datele se colectează progresiv.</strong> Prenume → E2. Instagram → E5 (după 2 întrebări). Email → E8 (după 4 întrebări). Telefon → E11 (după 6 întrebări). Ordinea nu se schimbă. Omul nu simte că i se cer date — simte că primește ceva în schimb la fiecare pas.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">5</div>
+        <div class="rule-text"><strong>Sandler Pain nu acumulează puncte.</strong> Ecranele E12, E13, E14 sunt exclusiv pentru adâncirea durerii și crearea urgenței. Nu influențează clasificarea. Nu au scoring.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">6</div>
+        <div class="rule-text"><strong>VSL-urile nu se trimit automat.</strong> La finalul quizului, omul e redirecționat pe WhatsApp. Consultantul primește datele (incluzând tipologia primară și secundară) și trimite manual VSL-ul corespunzător. Ecranul de rezultat afișează un placeholder sau teaser, nu videoul complet.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">7</div>
+        <div class="rule-text"><strong>Quote-urile lui Victor sunt obligatorii.</strong> Fiecare întrebare cu scoring (Q1–Q6) e urmată de un citat al lui Victor care validează situația. Acestea sunt hardcodate în conținut, nu generate dinamic. Nu sunt opționale — fac parte din mecanismul de conversie.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">8</div>
+        <div class="rule-text"><strong>Multi-select la Q1, Q3, Q5, Q13, Q14.</strong> Single-select la Q2, Q4, Q6, Q12. La multi-select, fiecare răspuns ales adaugă punctele lui independent. Omul poate selecta toate variantele — scoring-ul se adună pentru fiecare.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">9</div>
+        <div class="rule-text"><strong>Temperatura HOT/WARM/COLD rămâne funcțională.</strong> Se calculează din Q_GOAL (obiectivul financiar) la fel ca în codul original. Influențează textul CTA-ului din ecranul de rezultat. Logica din <code>temperature.ts</code> nu se modifică.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">10</div>
+        <div class="rule-text"><strong>Imaginile din assets/cases/ se înlocuiesc complet.</strong> Toate imaginile existente sunt ale altor persoane (audiența Danielei Ionaș). Victor trebuie să furnizeze imagini cu clienții săi reali sau screenshots cu rezultate. Dacă nu are imagini, se folosesc placeholder-uri text până la furnizare.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Notă pentru Antigravity</div>
+      <p>Textele complete pentru fiecare ecran de rezultat (cele 6 template-uri ResultTemplate) și textele pentru pauzele sociale vor fi furnizate separat de Victor. <strong>Nu inventați texte</strong> — acestea trebuie să fie în vocea lui Victor și să conțină poveștile lui reale (111 kg, barul care s-a prăbușit, managerul cu 4.200€, WineTime, Bacio di Bolle). Structura template-urilor e definită mai sus — așteptați conținutul de la Victor înainte de a popula fișierele <code>results/</code>.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="background: var(--gray-1); border-top: 1px solid var(--border); padding: 32px 64px; margin-top: 0;">
+  <div style="max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4);">
+      VICTOR MORAR × ANTIGRAVITY — QUIZ FUNNEL BRIEFING
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gray-4);">
+      Confidențial · Nu se distribuie
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
