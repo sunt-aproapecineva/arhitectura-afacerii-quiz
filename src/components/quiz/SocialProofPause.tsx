@@ -27,9 +27,9 @@ export function SocialProofPause({ content, onContinue }: SocialProofPauseProps)
         </div>
       )}
 
-      <div className="bg-white/5 backdrop-blur-md rounded-xl p-8 mb-8 w-full border border-white/10 animate-in slide-in-from-bottom-6 duration-700 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative">
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[var(--midnight)] border-t border-l border-white/10 rotate-45" />
-        
+      <div className="glass p-8 mb-8 w-full animate-in slide-in-from-bottom-6 duration-700 relative">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[var(--midnight-light)] border-t border-l border-white/10 rotate-45" />
+
         {content.text.split('\n\n').map((paragraph, i) => (
           <p key={i} className="font-arimo text-[17px] leading-relaxed mb-4 last:mb-0 text-[var(--viridian-ultra)] text-center italic relative z-10">
             {paragraph}
@@ -38,9 +38,9 @@ export function SocialProofPause({ content, onContinue }: SocialProofPauseProps)
       </div>
 
       <div className="w-full animate-in zoom-in-95 duration-500 delay-300 fill-mode-both">
-        <button 
-          onClick={onContinue} 
-          className="w-full bg-gradient-to-r from-[var(--viridian-dark)] to-[var(--viridian-main)] hover:from-[var(--viridian-main)] hover:to-[var(--viridian-light)] text-white py-4 text-lg font-archivo uppercase tracking-wider rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-[0_0_20px_var(--viridian-main)]"
+        <button
+          onClick={onContinue}
+          className="btn-premium w-full text-white py-4 text-lg font-archivo uppercase tracking-wider rounded-2xl"
         >
           {content.buttonText}
         </button>

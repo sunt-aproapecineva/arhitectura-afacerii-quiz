@@ -1,6 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Question, AnswerOption as AnswerOptionType } from '@/lib/quiz/types';
 import { AnswerOption } from './AnswerOption';
+
+// Interacțiune „calm & ușor":
+// — single-select: tap → 650ms de confirmare vizuală (fraţii se sting) → avans automat.
+//   Tap din nou pe răspunsul ales = avans imediat (respectăm nerăbdarea).
+//   Excepții: opțiunile „Alt răspuns" (au input) și revenirea cu Înapoi (Continuă vizibil).
+// — multi-select: Continuă rămâne, cu contor („· 3 alese") ca să fie evident că e multi.
+
+const DWELL_MS = 650;
 
 interface QuestionCardProps {
   question: Question;
@@ -11,6 +19,7 @@ interface QuestionCardProps {
   showBack?: boolean;
   preSelectedCode?: string;
   preSelectedCodes?: string[];
+  empathyNote?: string | null;
 }
 
 export function QuestionCard({
@@ -21,9 +30,11 @@ export function QuestionCard({
   onExpandNote,
   showBack = false,
   preSelectedCode,
-  preSelectedCodes
+  preSelectedCodes,
+  empathyNote,
 }: QuestionCardProps) {
   const isMulti = question.multiSelect;
+  const hadPreselection = !!(preSelectedCode || (preSelectedCodes && preSelectedCodes.length));
   const [selectedCodes, setSelectedCodes] = useState<Set<string>>(() => {
     if (preSelectedCodes && preSelectedCodes.length > 0) {
       return new Set(preSelectedCodes);
@@ -34,22 +45,54 @@ export function QuestionCard({
     return new Set();
   });
   const [otherTexts, setOtherTexts] = useState<Record<string, string>>({});
+  const [locked, setLocked] = useState(false);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const submittedRef = useRef(false);
 
-  const handleSingleSelect = useCallback((option: AnswerOptionType) => {
-    setSelectedCodes(new Set([option.code]));
-  }, []);
+  useEffect(() => () => { if (advanceTimer.current) clearTimeout(advanceTimer.current); }, []);
 
-  const handleSingleSubmit = useCallback(() => {
-    if (selectedCodes.size === 0) return;
-    const option = question.options.find(o => selectedCodes.has(o.code));
-    if (!option) return;
+  const submitOption = useCallback((option: AnswerOptionType) => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     if (option.isOther) {
       const customText = otherTexts[option.code] || option.text;
       onAnswer?.({ ...option, text: customText });
     } else {
       onAnswer?.(option);
     }
-  }, [selectedCodes, question.options, otherTexts, onAnswer]);
+  }, [otherTexts, onAnswer]);
+
+  const handleSingleSelect = useCallback((option: AnswerOptionType) => {
+    if (submittedRef.current) return;
+
+    // Al doilea tap pe opțiunea deja aleasă, în timpul dwell-ului → avans imediat.
+    if (locked && selectedCodes.has(option.code)) {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+      submitOption(option);
+      return;
+    }
+
+    setSelectedCodes(new Set([option.code]));
+
+    // „Alt răspuns" cere tastare — fără auto-advance, apare Continuă.
+    if (option.isOther) {
+      setLocked(false);
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+      return;
+    }
+
+    setLocked(true);
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => submitOption(option), DWELL_MS);
+  }, [locked, selectedCodes, submitOption]);
+
+  const handleSingleSubmit = useCallback(() => {
+    if (selectedCodes.size === 0) return;
+    const option = question.options.find(o => selectedCodes.has(o.code));
+    if (!option) return;
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    submitOption(option);
+  }, [selectedCodes, question.options, submitOption]);
 
   const handleMultiToggle = useCallback((option: AnswerOptionType) => {
     setSelectedCodes(prev => {
@@ -68,7 +111,8 @@ export function QuestionCard({
   }, []);
 
   const handleMultiSubmit = useCallback(() => {
-    if (selectedCodes.size === 0) return;
+    if (selectedCodes.size === 0 || submittedRef.current) return;
+    submittedRef.current = true;
     const selected = question.options
       .filter(o => selectedCodes.has(o.code))
       .map(o => {
@@ -80,10 +124,24 @@ export function QuestionCard({
     onMultiAnswer?.(selected);
   }, [selectedCodes, question.options, otherTexts, onMultiAnswer]);
 
+  // Continuă apare doar când chiar e nevoie de el.
+  const selectedIsOther = !isMulti && question.options.some(o => o.isOther && selectedCodes.has(o.code));
+  const showContinue = isMulti || selectedIsOther || (hadPreselection && !locked && selectedCodes.size > 0);
+  const count = selectedCodes.size;
+  const countLabel = isMulti && count > 0 ? ` · ${count} ${count === 1 ? 'aleasă' : 'alese'}` : '';
+
   return (
-    <div className="w-full max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
+    <div className="w-full max-w-2xl mx-auto pb-16">
+      {empathyNote && (
+        <div className="border-l-2 border-[var(--viridian-main)] pl-3 mb-6 animate-in fade-in slide-in-from-bottom-1 duration-500">
+          <p className="text-[13px] text-[var(--viridian-light)]/85 font-arimo italic">
+            {empathyNote}
+          </p>
+        </div>
+      )}
+
       {question.quote && (
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 border-l-[3px] border-l-[var(--viridian-main)] shadow-lg rounded-r-xl p-5 mb-8 relative">
+        <div className="glass border-l-[3px] border-l-[var(--viridian-main)] !rounded-l-md p-5 mb-8 relative">
           <div className="absolute -left-3 -top-4 text-6xl text-[var(--viridian-main)] opacity-20 font-serif">"</div>
           <p className="text-[var(--viridian-ultra)] font-arimo italic text-base leading-relaxed relative z-10">
             "{question.quote.text}"
@@ -104,18 +162,22 @@ export function QuestionCard({
         {question.text}
       </h2>
 
-      {question.subtitle && (
+      {question.subtitle ? (
         <p className="text-base text-[var(--viridian-light)] opacity-80 mb-6 font-arimo">
            {question.subtitle}
         </p>
-      )}
+      ) : isMulti ? (
+        <p className="text-base text-[var(--viridian-light)] opacity-80 mb-6 font-arimo">
+          Alege tot ce se aplică.
+        </p>
+      ) : null}
 
-      <div className="flex flex-col gap-4 mt-8">
+      <div className="flex flex-col gap-4 mt-8" data-locked={locked || undefined}>
         {question.options.map((option, index) => (
           <div
             key={option.code}
-            className="animate-in slide-in-from-bottom-4 fade-in"
-            style={{ animationDelay: `${index * 70}ms`, animationFillMode: 'both' }}
+            className="animate-in slide-in-from-bottom-3 fade-in"
+            style={{ animationDelay: `${90 + index * 50}ms`, animationFillMode: 'both', animationDuration: '340ms' }}
           >
             <AnswerOption
               option={option}
@@ -131,15 +193,17 @@ export function QuestionCard({
         ))}
       </div>
 
-      <div className="mt-8">
-        <button
-          onClick={isMulti ? handleMultiSubmit : handleSingleSubmit}
-          disabled={selectedCodes.size === 0}
-          className="w-full bg-[var(--viridian-main)] hover:bg-[var(--viridian-dark)] text-white py-4 text-lg font-archivo uppercase tracking-wider rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
-        >
-          CONTINUĂ →
-        </button>
-      </div>
+      {showContinue && (
+        <div className="mt-8 animate-in fade-in duration-300">
+          <button
+            onClick={isMulti ? handleMultiSubmit : handleSingleSubmit}
+            disabled={selectedCodes.size === 0}
+            className="btn-premium w-full text-white py-4 text-lg font-archivo uppercase tracking-wider rounded-2xl"
+          >
+            CONTINUĂ{countLabel} →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

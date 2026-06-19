@@ -4,20 +4,29 @@ import type {
   QuizPhase,
   AnswerRecord,
   ProfileAxis,
+  BProfileAxis,
 } from './types';
-import { performClassification } from './classification';
+import { performClassification, performBClassification } from './classification';
 
 export function createInitialState(sessionId?: string): QuizState {
   return {
     phase: 'INTRO',
     answers: [],
+    branch: null,
     scores: { R: 0, Re: 0, M: 0, D: 0, C: 0, S: 0 },
     profileAxis: null,
     secondaryProfile: null,
     resolvedProfile: null,
+    bScores: { ANGAJAT: 0, ARS: 0, ZERO: 0 },
+    bProfile: null,
+    bSituation: null,
+    bBlocker: null,
+    bInvest: null,
+    bReadiness: null,
     temperature: null,
     sessionId: sessionId ?? crypto.randomUUID(),
     startedAt: Date.now(),
+    timeline: [{ phase: 'INTRO', at: Date.now() }],
     pausesViewed: [],
     notesExpanded: [],
     formData: null,
@@ -71,6 +80,18 @@ function mergeScores(
   return updated;
 }
 
+function mergeBScores(
+  current: Record<BProfileAxis, number>,
+  incoming?: Partial<Record<BProfileAxis, number>>,
+): Record<BProfileAxis, number> {
+  if (!incoming) return current;
+  const updated = { ...current };
+  for (const [key, val] of Object.entries(incoming)) {
+    updated[key as BProfileAxis] += val as number;
+  }
+  return updated;
+}
+
 const PHASE1_FLOW: Partial<Record<QuizPhase, QuizPhase>> = {
   Q1: 'Q_INSTAGRAM',
   Q1_SOLO: 'Q_INSTAGRAM',
@@ -107,16 +128,48 @@ const PHASE4_FLOW: Partial<Record<QuizPhase, QuizPhase>> = {
   G2: 'TRANSITION',
 };
 
+// === RAMURA B — flux începători ===
+// Scoring: B_SITUATION → B_BLOCKER → B_DREAM → [classify] → B_INVEST.
+// Profil: B_INVEST → B_READINESS → Q_INSTAGRAM → Q_EMAIL → Q_PHONE → PAUSE_B1.
+// Pain: B_DELAY → B_COST → B_FEELING → B_FUTURE → PAUSE_B2 → B_GOAL → TRANSITION.
+const B_FLOW: Partial<Record<QuizPhase, QuizPhase>> = {
+  B_SITUATION: 'B_BLOCKER',
+  B_BLOCKER: 'B_DREAM',
+  // B_DREAM declanșează clasificarea (special, în ANSWER_B)
+  B_INVEST: 'B_READINESS',
+  B_READINESS: 'Q_INSTAGRAM',
+  PAUSE_B1: 'B_DELAY',
+  B_DELAY: 'B_COST',
+  B_COST: 'B_FEELING',
+  B_FEELING: 'B_FUTURE',
+  B_FUTURE: 'PAUSE_B2',
+  B_GOAL: 'TRANSITION',
+};
+
 const ALL_FLOW: Partial<Record<QuizPhase, QuizPhase>> = {
   ...PHASE1_FLOW,
   ...PHASE2_FLOW,
   ...PHASE3_FLOW,
   ...PHASE4_FLOW,
+  ...B_FLOW,
 };
 
 const BACK_MAP: Partial<Record<QuizPhase, QuizPhase>> = {
   'Q_NAME': 'INTRO',
-  'Q_HAS_EMPLOYEES': 'Q_NAME',
+  'Q_STAGE': 'Q_NAME',
+  // === Ramura B ===
+  'B_SITUATION': 'Q_STAGE',
+  'B_BLOCKER': 'B_SITUATION',
+  'B_DREAM': 'B_BLOCKER',
+  'B_INVEST': 'B_DREAM',
+  'B_READINESS': 'B_INVEST',
+  'B_DELAY': 'Q_PHONE',      // sare peste PAUSE_B1
+  'B_COST': 'B_DELAY',
+  'B_FEELING': 'B_COST',
+  'B_FUTURE': 'B_FEELING',
+  'B_GOAL': 'B_FUTURE',      // sare peste PAUSE_B2
+  // === Ramura A ===
+  'Q_HAS_EMPLOYEES': 'Q_STAGE',
   'Q1': 'Q_HAS_EMPLOYEES',
   'Q1_SOLO': 'Q_HAS_EMPLOYEES',
   'Q_INSTAGRAM': 'Q1',
@@ -163,19 +216,34 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
       if (state.phase !== 'Q_NAME') return state;
       return {
         ...state,
-        phase: 'Q_HAS_EMPLOYEES',
+        phase: 'Q_STAGE',
         answers: replaceOrAppend(state.answers, 'Q_NAME', makeAnswer('Q_NAME', 'name', event.payload.text)),
         formData: { ...(state.formData ?? { name: '', email: '' }), name: event.payload.text },
       };
 
-    case 'ANSWER_Q_INSTAGRAM':
-      if (state.phase !== 'Q_INSTAGRAM') return state;
+    case 'ANSWER_Q_STAGE': {
+      if (state.phase !== 'Q_STAGE') return state;
+      const { branch, code, text } = event.payload;
       return {
         ...state,
-        phase: state.hasEmployees === false ? 'Q2_SOLO' : 'Q2',
+        branch,
+        phase: branch === 'B' ? 'B_SITUATION' : 'Q_HAS_EMPLOYEES',
+        answers: replaceOrAppend(state.answers, 'Q_STAGE', makeAnswer('Q_STAGE', code, text)),
+      };
+    }
+
+    case 'ANSWER_Q_INSTAGRAM': {
+      if (state.phase !== 'Q_INSTAGRAM') return state;
+      const nextPhase = state.branch === 'B'
+        ? 'Q_EMAIL'
+        : (state.hasEmployees === false ? 'Q2_SOLO' : 'Q2');
+      return {
+        ...state,
+        phase: nextPhase,
         answers: replaceOrAppend(state.answers, 'Q_INSTAGRAM', makeAnswer('Q_INSTAGRAM', 'instagram', event.payload.text)),
         formData: { ...(state.formData ?? { name: '', email: '' }), instagram: event.payload.text },
       };
+    }
 
     case 'ANSWER_Q': {
       const { code, text, scores, questionIdOverride } = event.payload;
@@ -219,11 +287,28 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
       };
     }
 
+    case 'ANSWER_B': {
+      // Întrebări de scoring pe ramura B (ANGAJAT/ARS/ZERO).
+      const { field, code, text, bScores, questionId } = event.payload;
+      const newBScores = mergeBScores(state.bScores, bScores);
+      const base: QuizState = {
+        ...state,
+        bScores: newBScores,
+        ...(field ? { [field]: text } : {}),
+        answers: replaceOrAppend(state.answers, questionId, makeAnswer(questionId, code, text)),
+      };
+      // B_DREAM = tie-breaker → clasifică profilul B.
+      if (state.phase === 'B_DREAM') {
+        return performBClassification(base);
+      }
+      return { ...base, phase: ALL_FLOW[state.phase] ?? 'COMPLETED' };
+    }
+
     case 'ANSWER_Q_EMAIL':
       if (state.phase !== 'Q_EMAIL') return state;
       return {
         ...state,
-        phase: 'P2',
+        phase: state.branch === 'B' ? 'Q_PHONE' : 'P2',
         answers: replaceOrAppend(state.answers, 'Q_EMAIL', makeAnswer('Q_EMAIL', 'email', event.payload.text)),
         formData: { ...(state.formData ?? { name: '', email: '' }), email: event.payload.text },
       };
@@ -232,7 +317,7 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
       if (state.phase !== 'Q_PHONE') return state;
       return {
         ...state,
-        phase: 'PAUSE_A',
+        phase: state.branch === 'B' ? 'PAUSE_B1' : 'PAUSE_A',
         answers: replaceOrAppend(state.answers, 'Q_PHONE', makeAnswer('Q_PHONE', 'phone', event.payload.text)),
         formData: { ...(state.formData ?? { name: '', email: '' }), phone: event.payload.text },
       };
@@ -302,6 +387,10 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
         if (code === 'G1A' || code === 'G1E') temperature = 'HOT';
         else if (code === 'G1B' || code === 'G1C') temperature = 'WARM';
         else temperature = 'COLD';
+      } else if (questionId === 'B_GOAL') {
+        if (code === 'BG_A') temperature = 'HOT';
+        else if (code === 'BG_B' || code === 'BG_C') temperature = 'WARM';
+        else temperature = 'COLD';
       }
 
       return {
@@ -340,8 +429,13 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
         PAUSE_A: 'L1_COST',
         PAUSE_B: 'L3_IMPACT',
         PAUSE_C: 'TRANSITION',
+        PAUSE_B1: 'B_DELAY',
+        PAUSE_B2: 'B_GOAL',
       };
-      const pauseId = state.phase === 'PAUSE_A' ? 'A' : state.phase === 'PAUSE_B' ? 'B' : 'C';
+      const pauseIdMap: Partial<Record<QuizPhase, 'A' | 'B' | 'C' | 'B1' | 'B2'>> = {
+        PAUSE_A: 'A', PAUSE_B: 'B', PAUSE_C: 'C', PAUSE_B1: 'B1', PAUSE_B2: 'B2',
+      };
+      const pauseId = pauseIdMap[state.phase] ?? 'A';
       return {
         ...state,
         phase: pauseMap[state.phase] ?? state.phase,
@@ -354,6 +448,14 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
     case 'CONTINUE_MID_TRANSITION':
       return { ...state, phase: 'P1' };
 
+    case 'CONTINUE_REVEAL': {
+      if (state.phase !== 'REVEAL_PROFILE') return state;
+      const next: QuizPhase = state.branch === 'B'
+        ? 'B_INVEST'
+        : (state.hasEmployees ? 'P1' : 'Q_EMAIL');
+      return { ...state, phase: next };
+    }
+
     case 'CONTINUE_TRANSITION':
       return { ...state, phase: 'RESULT' };
 
@@ -365,11 +467,18 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
 
     case 'GO_BACK': {
       let prevPhase: QuizPhase | undefined = BACK_MAP[state.phase];
-      if (state.phase === 'Q_INSTAGRAM' && state.hasEmployees === false) {
-        prevPhase = 'Q1_SOLO';
-      }
-      if (state.phase === 'Q_EMAIL' && state.hasEmployees === false) {
-        prevPhase = 'Q4_SOLO';
+      // Pașii de contact sunt comuni ambelor ramuri — back-ul depinde de ramură.
+      if (state.branch === 'B') {
+        if (state.phase === 'Q_INSTAGRAM') prevPhase = 'B_READINESS';
+        if (state.phase === 'Q_EMAIL') prevPhase = 'Q_INSTAGRAM';
+        if (state.phase === 'Q_PHONE') prevPhase = 'Q_EMAIL';
+      } else {
+        if (state.phase === 'Q_INSTAGRAM' && state.hasEmployees === false) {
+          prevPhase = 'Q1_SOLO';
+        }
+        if (state.phase === 'Q_EMAIL' && state.hasEmployees === false) {
+          prevPhase = 'Q4_SOLO';
+        }
       }
       if (!prevPhase) return state;
       return { ...state, phase: prevPhase };
@@ -389,4 +498,15 @@ export function quizReducer(state: QuizState, event: QuizEvent): QuizState {
     default:
       return state;
   }
+}
+
+// Reducer cu telemetrie: înregistrează fiecare schimbare de fază (funnel + timp per pas).
+// Folosit de UI în locul lui quizReducer; quizReducer rămâne pur pentru teste.
+export function quizReducerTracked(state: QuizState, event: QuizEvent): QuizState {
+  const next = quizReducer(state, event);
+  if (next === state || next.phase === state.phase) return next;
+  return {
+    ...next,
+    timeline: [...(next.timeline ?? []), { phase: next.phase, at: Date.now() }],
+  };
 }

@@ -16,7 +16,8 @@ function clamp(s: string, max: number): string {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const VALID_PROFILES = ["R", "Re", "M", "D", "C", "S", ""];
+// A: tipologii business · B: persona începători (ramura START)
+const VALID_PROFILES = ["R", "Re", "M", "D", "C", "S", "ANGAJAT", "ARS", "ZERO", ""];
 const VALID_TEMPS = ["HOT", "WARM", "COLD", ""];
 
 serve(async (req) => {

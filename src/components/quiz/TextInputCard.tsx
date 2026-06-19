@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Lock } from 'lucide-react';
 
 interface TextInputCardProps {
   question: string;
@@ -13,6 +14,7 @@ interface TextInputCardProps {
   initialValue?: string;
   type?: string;
   note?: string;
+  validate?: (value: string) => string | null;  // null = valid; string = mesaj de eroare
 }
 
 export function TextInputCard({
@@ -28,6 +30,7 @@ export function TextInputCard({
   initialValue = '',
   type = 'text',
   note,
+  validate,
 }: TextInputCardProps) {
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState('');
@@ -42,6 +45,13 @@ export function TextInputCard({
       setError('Te rugăm să introduci un email valid.');
       return;
     }
+    if (validate && trimmed) {
+      const message = validate(trimmed);
+      if (message) {
+        setError(message);
+        return;
+      }
+    }
     setError('');
     onSubmit(trimmed);
   };
@@ -52,11 +62,11 @@ export function TextInputCard({
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-500 w-full max-w-lg mx-auto pb-10">
-      
-      <div className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/10 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--viridian-dark)] to-[var(--viridian-light)] opacity-80" />
-        
+    <div className="flex flex-col gap-6 animate-in slide-in-from-bottom-3 duration-340 w-full max-w-lg mx-auto pb-10">
+
+      <div className="glass p-6 md:p-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--viridian-dark)] via-[var(--viridian-main)] to-[var(--viridian-light)] opacity-80" />
+
         <h2 className="font-archivo text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white mb-3">
           {question}
         </h2>
@@ -76,7 +86,8 @@ export function TextInputCard({
               if (error) setError('');
             }}
             placeholder={placeholder}
-            className="w-full px-5 py-4 rounded-xl border border-white/10 bg-black/40 text-[var(--viridian-ultra)] text-lg focus:outline-none focus:border-[var(--viridian-main)] focus:ring-1 focus:ring-[var(--viridian-main)] transition-all shadow-inner placeholder:text-[var(--viridian-light)]/30 font-arimo"
+            className="w-full px-5 py-4 rounded-xl border border-white/10 bg-black/40 text-[var(--viridian-ultra)] text-lg focus:outline-none focus:border-[var(--viridian-main)] focus:ring-1 focus:ring-[var(--viridian-main)] shadow-inner placeholder:text-[var(--viridian-light)]/30 font-arimo"
+            style={{ transition: 'border-color 160ms var(--ease-move), box-shadow 160ms var(--ease-move)' }}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             autoFocus
           />
@@ -85,28 +96,29 @@ export function TextInputCard({
               Ex: {example}
             </p>
           )}
-          {error && <p className="text-red-400 text-sm mt-2 ml-1 animate-in slide-in-from-top-1 font-medium">{error}</p>}
+          {error && <p className="text-red-400 text-sm mt-2 ml-1 animate-in slide-in-from-top-1 duration-200 font-medium">{error}</p>}
         </div>
 
         {note && (
-          <div className="mt-5 p-3 rounded-lg bg-[var(--midnight)] border border-[var(--viridian-dark)]">
+          <div className="mt-5 p-3 rounded-lg bg-[var(--midnight)] border border-[var(--viridian-dark)] flex items-start gap-2">
+            <Lock className="w-4 h-4 mt-0.5 shrink-0 text-[var(--viridian-light)]/70" strokeWidth={1.75} />
             <p className="text-sm text-[var(--viridian-light)] opacity-80 leading-snug">
-              🔒 {note}
+              {note}
             </p>
           </div>
         )}
       </div>
 
       <div className="flex flex-col gap-3 mt-2">
-        <button 
-          onClick={handleSubmit} 
-          className="w-full bg-gradient-to-r from-[var(--viridian-dark)] to-[var(--viridian-main)] hover:from-[var(--viridian-main)] hover:to-[var(--viridian-light)] text-white py-4 text-lg font-archivo uppercase tracking-wider rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-[0_0_20px_var(--viridian-main)]"
+        <button
+          onClick={handleSubmit}
+          className="btn-premium w-full text-white py-4 text-lg font-archivo uppercase tracking-wider rounded-2xl"
         >
           {buttonText} {optional && value.trim() === '' ? '(Omite)' : '→'}
         </button>
-        
+
         {optional && value.trim() === '' && (
-          <button 
+          <button
             onClick={handleSkip}
             className="text-sm text-[var(--viridian-light)] opacity-70 hover:opacity-100 uppercase tracking-widest font-archivo py-2"
           >
@@ -115,7 +127,7 @@ export function TextInputCard({
         )}
 
         {showBack && onBack && (
-          <button 
+          <button
             onClick={onBack}
             className="mt-2 text-[var(--viridian-light)] opacity-60 hover:opacity-100 font-arimo text-sm py-2 transition-opacity"
           >

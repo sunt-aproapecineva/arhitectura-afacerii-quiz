@@ -3,12 +3,32 @@
 // ============================================
 
 export type ProfileAxis = 'R' | 'Re' | 'M' | 'D' | 'C' | 'S';
+// Ramura B — începători (cei care vor să deschidă o afacere).
+// 3 persona din strategie: Angajatul-antreprenor / Întemeietorul ars / Începătorul de la zero.
+export type BProfileAxis = 'ANGAJAT' | 'ARS' | 'ZERO';
+export type Branch = 'A' | 'B';
 export type Temperature = 'HOT' | 'WARM' | 'COLD';
 
 export type QuizPhase =
   | 'INTRO'
   // Intro + Date initiale
   | 'Q_NAME'
+  | 'Q_STAGE'            // FURCĂ A/B: ai o afacere activă SAU ești la început?
+  // === RAMURA B — Începători ===
+  | 'B_SITUATION'        // Unde ești pe drumul spre prima afacere? (scoring B)
+  | 'B_BLOCKER'          // Ce te oprește cel mai mult? (scoring B, discriminator)
+  | 'B_DREAM'            // Cum ar arăta reușita în 12 luni? (scoring B, tie-breaker)
+  | 'B_INVEST'           // Ai investit în educația ta de business? (profil)
+  | 'B_READINESS'        // Cât de aproape ești de primul pas serios? (profil)
+  | 'B_DELAY'            // De cât timp tot amâni? (pain — costul nemișcării)
+  | 'B_COST'             // Ce te-a costat deja că n-ai pornit? (pain, multi)
+  | 'B_FEELING'          // Cum te simți că încă n-ai început? (pain)
+  | 'B_FUTURE'           // Dacă peste 1 an ești tot aici? (pain, multi)
+  | 'B_GOAL'             // Ce vrei de la pasul următor? (setează temperatura)
+  | 'PAUSE_B1'           // Social proof B (după contact)
+  | 'PAUSE_B2'           // Social proof B (înainte de scop)
+  | 'REVEAL_PROFILE'     // Interstițiu: profilul începe să se contureze (după clasificare, ambele ramuri)
+  // === RAMURA A — Afacere activă ===
   // Faza 1 — Identificare tipologie (scoring)
   | 'Q_HAS_EMPLOYEES'    // Gate: ai angajati? (prima intrebare de business)
   | 'Q1'                 // Frustrare echipa (cu angajati)
@@ -55,17 +75,32 @@ export interface AnswerRecord {
   timestamp: number;
 }
 
+// Telemetrie: un eveniment per schimbare de fază — reconstruiește funnel-ul și timpii per pas.
+export interface TimelineEvent {
+  phase: QuizPhase;
+  at: number;
+}
+
 export interface QuizState {
   phase: QuizPhase;
   answers: AnswerRecord[];
+  branch: Branch | null;                   // Q_STAGE — 'A' afacere activă / 'B' începător
   scores: Record<ProfileAxis, number>;
-  profileAxis: ProfileAxis | null;        // Primary (setata dupa Q4)
-  secondaryProfile: ProfileAxis | null;   // Secondary
+  profileAxis: ProfileAxis | null;        // Primary (setata dupa Q4) — ramura A
+  secondaryProfile: ProfileAxis | null;   // Secondary — ramura A
   resolvedProfile: ProfileAxis | null;
+  // === Ramura B — scoring + profil începător ===
+  bScores: Record<BProfileAxis, number>;
+  bProfile: BProfileAxis | null;          // setat după B_DREAM
+  bSituation: string | null;              // B_SITUATION (text)
+  bBlocker: string | null;                // B_BLOCKER (text)
+  bInvest: string | null;                 // B_INVEST
+  bReadiness: string | null;              // B_READINESS
   temperature: Temperature | null;
   sessionId: string;
   startedAt: number;
-  pausesViewed: ('A' | 'B' | 'C')[];
+  timeline: TimelineEvent[];
+  pausesViewed: ('A' | 'B' | 'C' | 'B1' | 'B2')[];
   notesExpanded: string[];
   formData: QuizFormData | null;
   ctaClicked: boolean;
@@ -110,6 +145,10 @@ export type QuizEvent =
   // Faza 1 — scoring questions
   | { type: 'ANSWER_Q'; payload: { code: string; text: string; scores?: Partial<Record<ProfileAxis, number>>; questionIdOverride?: string } }
   | { type: 'ANSWER_Q_MULTI'; payload: { codes: string[]; texts: string[]; scoresList?: Partial<Record<ProfileAxis, number>>[]; questionIdOverride?: string } }
+  // Furcă A/B
+  | { type: 'ANSWER_Q_STAGE'; payload: { branch: Branch; code: string; text: string } }
+  // Ramura B — scoring profil începător (ANGAJAT/ARS/ZERO)
+  | { type: 'ANSWER_B'; payload: { field?: keyof QuizState; code: string; text: string; bScores?: Partial<Record<BProfileAxis, number>>; questionId: string } }
   // Faza 2 — profil
   | { type: 'ANSWER_P_SINGLE'; payload: { field: keyof QuizState; code: string; text: string; questionId: string } }
   | { type: 'ANSWER_P_MULTI'; payload: { field: keyof QuizState; codes: string[]; texts: string[]; questionId: string } }
@@ -123,6 +162,7 @@ export type QuizEvent =
   | { type: 'ANSWER_GOAL_MULTI'; payload: { field: keyof QuizState; codes: string[]; texts: string[]; questionId: string } }
   // Flow control
   | { type: 'MICRO_VALIDATION_DONE' }
+  | { type: 'CONTINUE_REVEAL' }
   | { type: 'CONTINUE_PAUSE' }
   | { type: 'CONTINUE_MID_TRANSITION' }
   | { type: 'CONTINUE_TRANSITION' }
@@ -139,7 +179,8 @@ export interface AnswerOption {
   note?: ExplanatoryNote;
   microValidation?: string;
   isOther?: boolean;
-  scores?: Partial<Record<ProfileAxis, number>>;
+  scores?: Partial<Record<ProfileAxis, number>>;       // ramura A
+  bScores?: Partial<Record<BProfileAxis, number>>;     // ramura B
 }
 
 export interface ExplanatoryNote {
@@ -177,16 +218,29 @@ export interface ResultSection {
   body: string;
 }
 
+// Acțiunea CTA de pe ecranul de rezultat — determină unde merge lead-ul.
+export type CtaAction =
+  | 'waitlist'
+  | 'email_result'
+  | 'lesson_beginner'
+  | 'lesson_expert'
+  | 'book_call'      // HOT — programează apel (calendar)
+  | 'whatsapp'       // DM pe WhatsApp cu mesaj precompletat
+  | 'mini_curs'      // ramura B — tripwire mini-curs 19/49€
+  | 'start';         // ramura B — produsul START
+
+export interface CtaConfig {
+  text: string;
+  subtext: string;
+  action: CtaAction;
+  url?: string;
+}
+
 export interface ResultTemplate {
   profileLabel: string;
   levelLabel: string;
   headline: string;
   sections: ResultSection[];
   socialProof: string;
-  cta: Record<Temperature, {
-    text: string;
-    subtext: string;
-    action: 'waitlist' | 'email_result' | 'lesson_beginner' | 'lesson_expert';
-    url?: string;
-  }>;
+  cta: Record<Temperature, CtaConfig>;
 }

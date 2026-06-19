@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface QuizSubmission {
   submittedAt: string;
   sessionId: string;
+  branch: string;                 // 'A' (afacere activă) | 'B' (începător)
   contact: {
     name: string;
     email: string;
@@ -11,9 +12,16 @@ export interface QuizSubmission {
     instagram: string;
   };
   profile: {
-    primary: string;
+    primary: string;              // A: R/Re/M/D/C/S · B: ANGAJAT/ARS/ZERO
     secondary: string;
     temperature: string;
+  };
+  beginner: {                     // populat doar pe ramura B
+    bProfile: string;
+    situation: string | null;
+    blocker: string | null;
+    invest: string | null;
+    readiness: string | null;
   };
   business: {
     hasEmployees: boolean | null;
@@ -40,12 +48,18 @@ export interface QuizSubmission {
     mainGoal: string | null;
     revenueTarget: string | null;
   };
+  meta: {                         // telemetrie: funnel + timp per pas
+    startedAt: string;
+    durationSeconds: number;
+    timeline: { phase: string; at: number }[];
+  };
 }
 
 export function buildSubmission(state: QuizState): QuizSubmission {
   return {
     submittedAt: new Date().toISOString(),
     sessionId: state.sessionId,
+    branch: state.branch ?? '',
     contact: {
       name: state.formData?.name ?? '',
       email: state.formData?.email ?? '',
@@ -53,9 +67,17 @@ export function buildSubmission(state: QuizState): QuizSubmission {
       instagram: state.formData?.instagram ?? '',
     },
     profile: {
-      primary: state.profileAxis ?? '',
+      // pe ramura B punem profilul de începător ca „primary", ca să existe un singur câmp util
+      primary: (state.branch === 'B' ? state.bProfile : state.profileAxis) ?? '',
       secondary: state.secondaryProfile ?? '',
       temperature: state.temperature ?? '',
+    },
+    beginner: {
+      bProfile: state.bProfile ?? '',
+      situation: state.bSituation,
+      blocker: state.bBlocker,
+      invest: state.bInvest,
+      readiness: state.bReadiness,
     },
     business: {
       hasEmployees: state.hasEmployees,
@@ -81,6 +103,11 @@ export function buildSubmission(state: QuizState): QuizSubmission {
     goals: {
       mainGoal: state.mainGoal,
       revenueTarget: state.revenueTarget,
+    },
+    meta: {
+      startedAt: new Date(state.startedAt).toISOString(),
+      durationSeconds: Math.round((Date.now() - state.startedAt) / 1000),
+      timeline: (state.timeline ?? []).map(t => ({ phase: t.phase, at: t.at })),
     },
   };
 }

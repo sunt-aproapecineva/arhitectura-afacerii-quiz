@@ -1,5 +1,14 @@
 import type { ProfileRevealContent } from '@/lib/quiz/types';
 
+// Cadrul ecranului de reveal — onest: numim tiparul, spunem ce mai avem de cartografiat.
+// (Niciodată „știm dar nu-ți spunem" — open loop-ul e planul, nu diagnosticul.)
+export const REVEAL_FRAME = {
+  eyebrow: 'Analiza ta preliminară',
+  scanning: 'Recunoaștem tiparul…',
+  openLoop: 'Urmează partea care contează: cât te costă și ce facem cu asta. Câteva răspunsuri și îți construiesc planul.',
+  button: 'Hai să confirmăm →',
+};
+
 export const PROFILE_REVEALS: Record<string, ProfileRevealContent> = {
   R: {
     emoji: '🔄',
@@ -30,5 +39,24 @@ export const PROFILE_REVEALS: Record<string, ProfileRevealContent> = {
     emoji: '🌀',
     title: 'Crești, dar totul se complică.',
     description: 'Cifra urcă, echipa crește, haosul crește odată cu ea. Fiecare manager face cum vrea. Nu există organigramă clară sau procese standard — creșterea amplifică problemele existente.',
+  },
+};
+
+// Ramura B — reveal parțial, demnitar: omul trebuie să se simtă VĂZUT, nu judecat.
+export const B_PROFILE_REVEALS: Record<string, ProfileRevealContent> = {
+  ANGAJAT: {
+    emoji: '🧭',
+    title: 'Nu ești fricos. Ești precaut din motive bune.',
+    description: 'Ai ceva de pierdut — de-asta cântărești atât. Răspunsurile tale arată un om care pregătește o tranziție, nu un salt în gol.',
+  },
+  ARS: {
+    emoji: '🔥',
+    title: 'Ai mai construit o dată. Asta contează.',
+    description: 'Văd un om care a plătit deja taxa de intrare în antreprenoriat. Întrebarea nu mai e dacă poți — e ce faci diferit a doua oară.',
+  },
+  ZERO: {
+    emoji: '🌱',
+    title: 'Nu ești în urmă. Ești înainte de start.',
+    description: 'Răspunsurile tale arată pe cineva care s-a pregătit mai mult decât crede. Blocajul nu e unde îl cauți tu.',
   },
 };

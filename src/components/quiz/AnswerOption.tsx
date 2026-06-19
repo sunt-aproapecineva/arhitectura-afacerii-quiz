@@ -28,11 +28,8 @@ export function AnswerOption({
       <button
         type="button"
         onClick={() => onSelect(option)}
-        className={`w-full text-left p-4 md:p-5 rounded-xl border cursor-pointer transition-all duration-300 transform hover:-translate-y-1 ${
-          selected
-            ? 'border-[var(--viridian-main)] bg-[var(--viridian-dark)]/40 shadow-[0_0_20px_rgba(10,150,120,0.2)] backdrop-blur-md'
-            : 'border-white/10 bg-white/5 backdrop-blur-md hover:border-[var(--viridian-main)]/50 hover:bg-white/10 hover:shadow-lg'
-        }`}
+        data-selected={selected}
+        className="answer-option w-full text-left p-4 md:p-5 cursor-pointer"
       >
         <div className="flex items-start gap-4">
           {mode === 'radio' ? (

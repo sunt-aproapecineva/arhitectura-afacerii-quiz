@@ -1,83 +1,101 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { MotionIcon } from 'motion-icons-react';
+import type { Branch } from '@/lib/quiz/types';
 
-const STAGES = [
-  "Centralizăm toate structurile decizionale...",
-  "Calculăm indicele de calificare Sandler...",
-  "💡 \"Cei 1% nu iau decizii. Ei urmează principii.\" — V. Morar",
-  "Generăm planul de acțiune personalizat...",
-  "Finalizăm auditul celor 6 tipologii de performanță..."
-];
+// „Asamblăm diagnosticul" — checklist vizibil de la început (planul la vedere
+// e el însuși anticipare onestă), bifat metronomic. Fără procente false.
+
+const SLOT_MS = 900;
+const EXIT_MS = 240;
+
+function buildItems(branch: Branch | null, name: string): string[] {
+  const who = name || 'tine';
+  if (branch === 'B') {
+    return [
+      'Analizăm punctul tău de pornire',
+      'Confirmăm profilul de start',
+      'Calculăm pregătirea de start',
+      `Pregătim primul pas pentru ${who}`,
+    ];
+  }
+  return [
+    'Analizăm răspunsurile tale',
+    'Identificăm tiparul principal',
+    'Calculăm Scorul de Libertate',
+    `Pregătim planul pentru ${who}`,
+  ];
+}
 
 interface FinalTransitionScreenProps {
   onComplete: () => void;
+  branch?: Branch | null;
+  userName?: string;
 }
 
-export function FinalTransitionScreen({ onComplete }: FinalTransitionScreenProps) {
-  const [index, setIndex] = useState(0);
+export function FinalTransitionScreen({ onComplete, branch = null, userName = '' }: FinalTransitionScreenProps) {
+  const items = buildItems(branch, userName);
+  const total = items.length * SLOT_MS;
+  const [done, setDone] = useState(0);          // câte item-uri sunt bifate
+  const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((i) => {
-        if (i < STAGES.length - 1) return i + 1;
-        return i;
-      });
-    }, 5000);
-
-    const completeTimeout = setTimeout(() => {
-      onComplete();
-    }, 25000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(completeTimeout);
-    };
-  }, [onComplete]);
+      setDone(d => Math.min(d + 1, items.length));
+    }, SLOT_MS);
+    const exitT = setTimeout(() => setLeaving(true), total);
+    const doneT = setTimeout(onComplete, total + EXIT_MS);
+    return () => { clearInterval(interval); clearTimeout(exitT); clearTimeout(doneT); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4 max-w-lg mx-auto w-full">
-      <div className="mb-12 relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[var(--viridian-main)]/10 rounded-full blur-[60px] animate-pulse" style={{ animationDuration: '4s' }} />
-        
-        <div className="relative w-28 h-28 flex items-center justify-center">
-          <svg className="w-full h-full text-[var(--viridian-main)] animate-spin" style={{ animationDuration: '8s' }} viewBox="0 0 100 100">
-             <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="300" strokeDashoffset="150" className="opacity-40" />
-             <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="150" strokeDashoffset="50" className="opacity-80 drop-shadow-md" />
-             <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="100" strokeDashoffset="0" className="opacity-30" />
-          </svg>
-          <div className="absolute flex items-center justify-center text-[10px] uppercase font-archivo tracking-[0.2em] text-[var(--viridian-ultra)] shadow-lg animate-pulse" style={{ animationDuration: '2s' }}>
-            VICTOR MORAR
-          </div>
-        </div>
+    <div
+      className="flex flex-col items-center justify-center min-h-[70vh] px-4 max-w-md mx-auto w-full transition-[opacity,transform] duration-[240ms]"
+      style={{
+        transitionTimingFunction: 'cubic-bezier(.55,0,1,.45)',
+        opacity: leaving ? 0 : 1,
+        transform: leaving ? 'translateY(-8px)' : 'none',
+      }}
+    >
+      <div className="flex items-center gap-2.5 mb-10 animate-in fade-in duration-500">
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--viridian-main)] shadow-[0_0_10px_var(--viridian-main)]" />
+        <span className="font-archivo text-sm font-bold tracking-[0.3em] text-[var(--viridian-ultra)]/80">
+          VICTOR MORAR
+        </span>
       </div>
 
-      <div className="min-h-[80px] w-full flex items-center justify-center px-6">
-        <p key={index} className="text-xl md:text-2xl font-arimo text-[var(--viridian-ultra)]/90 tracking-wide animate-in fade-in slide-in-from-bottom-2 duration-1000 leading-relaxed drop-shadow-sm">
-          {STAGES[index]}
-        </p>
+      <div className="glass w-full p-6 md:p-7 flex flex-col gap-5">
+        {items.map((label, i) => {
+          const isDone = i < done;
+          const isActive = i === done;
+          return (
+            <div
+              key={label}
+              className="flex items-center gap-4 transition-opacity duration-300"
+              style={{ opacity: isDone ? 0.85 : isActive ? 1 : 0.35 }}
+            >
+              <span className="relative shrink-0 w-6 h-6 grid place-items-center">
+                {isDone ? (
+                  <span className="w-6 h-6 rounded-full bg-[var(--viridian-main)] grid place-items-center animate-in zoom-in-75 duration-200 shadow-[0_0_14px_-2px_var(--viridian-main)]">
+                    <MotionIcon name="Check" animation="success" trigger="always" size={14} color="#ffffff" />
+                  </span>
+                ) : isActive ? (
+                  <MotionIcon name="Loader2" animation="spin" trigger="always" size={22} color="var(--viridian-main)" />
+                ) : (
+                  <span className="w-5 h-5 rounded-full border-2 border-white/15" />
+                )}
+              </span>
+              <span className={`text-[15px] font-arimo text-left ${isDone ? 'text-[var(--viridian-light)]' : 'text-[var(--viridian-ultra)]'}`}>
+                {label}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="mt-16 w-full max-w-xs relative flex flex-col items-center">
-        <div className="w-full flex justify-between text-xs font-archivo text-[var(--viridian-light)]/60 uppercase tracking-widest mb-3">
-          <span>Stadiu Audit</span>
-          <span>{Math.min(100, Math.round(((index + 1) / STAGES.length) * 100))}%</span>
-        </div>
-        
-        <div className="w-full h-[3px] bg-white/5 rounded-full overflow-hidden shadow-inner backdrop-blur-md">
-          <div 
-            className="h-full bg-gradient-to-r from-[var(--viridian-dark)] via-[var(--viridian-main)] to-[#fff] origin-left shadow-[0_0_10px_var(--viridian-main)]"
-            style={{ 
-              animation: 'fillScale 25s cubic-bezier(0.1, 0.7, 1.0, 0.1) forwards' 
-            }}
-          />
-        </div>
-      </div>
-
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes fillScale {
-          0% { transform: scaleX(0); }
-          100% { transform: scaleX(1); }
-        }
-      `}} />
+      <p className="text-xs text-[var(--viridian-ultra)]/40 font-arimo italic mt-8 text-center max-w-xs">
+        „Cei 1% nu iau decizii. Ei urmează principii." — Victor Morar
+      </p>
     </div>
   );
 }
