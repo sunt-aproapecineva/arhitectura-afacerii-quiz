@@ -183,7 +183,7 @@ function isValidEmail(value: string): boolean {
 // ── CTA — link-uri configurabile per acțiune ──
 // TODO(Victor): înlocuiește booking cu un calendar (cal.com/Calendly) și
 // miniCurs/start cu landing-urile reale. Până atunci, fallback pe WhatsApp.
-const WHATSAPP_LINK = 'https://wa.link/sg786e';
+const WHATSAPP_LINK = 'https://wa.link/rvknuv';
 const CTA_LINKS: Record<string, string> = {
   book_call: WHATSAPP_LINK,
   whatsapp: WHATSAPP_LINK,
